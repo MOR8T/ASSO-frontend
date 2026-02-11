@@ -3,5 +3,5 @@
 export default function Home() {
   // const t = useTranslations("");
 
-  return <div className="">Bahnschrift</div>;
+  return <div className="h-100">Bahnschrift</div>;
 }

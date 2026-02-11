@@ -1,3 +1,120 @@
+import { Link } from "@/i18n/navigation";
+import Image from "next/image";
+import footer_logo from "../../public/images/logos/footer_logo.svg";
+import exmapleVideo from "../../public/images/footer_video.png";
+import partner_1 from "../../public/images/logos/partner_1.svg";
+import partner_2 from "../../public/images/logos/partner_2.svg";
+import partner_3 from "../../public/images/logos/partner_3.svg";
+import partner_4 from "../../public/images/logos/partner_4.svg";
+import partner_5 from "../../public/images/logos/partner_5.svg";
+
 export default function Footer() {
-  return <footer>footer</footer>;
+  const socialMediaLinks = [
+    {
+      name: "Facebook",
+      url: "https://www.facebook.com/yourpage",
+      icon: "https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg",
+    },
+    {
+      name: "Twitter",
+      url: "https://www.twitter.com/yourprofile",
+      icon: "https://www.twitter.com/favicon.ico",
+    },
+    {
+      name: "Instagram",
+      url: "https://www.instagram.com/yourprofile",
+      icon: "https://cdn.pixabay.com/photo/2021/06/15/12/14/instagram-6338393_1280.png",
+    },
+    {
+      name: "LinkedIn",
+      url: "https://www.linkedin.com/in/yourprofile",
+      icon: "https://www.linkedin.com/favicon.ico",
+    },
+    {
+      name: "YouTube",
+      url: "https://www.youtube.com/channel/yourchannel",
+      icon: "https://upload.wikimedia.org/wikipedia/commons/f/fc/YouTube_play_button_square_%282013-2017%29.svg",
+    },
+  ];
+
+  const partners = [
+    {
+      name: "Partner 1",
+      logo: partner_1,
+    },
+    {
+      name: "Partner 2",
+      logo: partner_2,
+    },
+    {
+      name: "Partner 3",
+      logo: partner_3,
+    },
+    {
+      name: "Partner 4",
+      logo: partner_4,
+    },
+    {
+      name: "Partner 5",
+      logo: partner_5,
+    },
+  ];
+
+  return (
+    <footer className="">
+      <div className="bg-[#34393F] h-55 flex items-center justify-evenly">
+        {partners.map((partner) => (
+          <Image
+            key={partner.name}
+            src={partner.logo}
+            alt={`${partner.name} logo`}
+            width={150}
+            height={150}
+            // className="h-30 w-auto"
+          />
+        ))}
+      </div>
+
+      <div>
+        <Image
+          src={exmapleVideo}
+          alt="Example Video"
+          width={1920}
+          height={1080}
+        />
+      </div>
+      {/* the last section */}
+      <div className="w-full px-5 mx-auto mt-[200px]">
+        <div className="max-w-7xl mx-auto py-7 flex justify-between items-center border-t border-[#5B626B]">
+          <Link href="/">
+            <Image src={footer_logo} alt="ASSO logo" width={200} height={100} />
+          </Link>
+          <div className="flex items-center gap-4">
+            {socialMediaLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div className="bg-[#53565B] w-10 h-10 rounded-[20px]">
+                  {/* <Image
+                    src={link.icon}
+                    alt={`${link.name}`}
+                    width={40}
+                    height={40}
+                    className="mx-auto my-2"
+                  /> */}
+                </div>
+              </a>
+            ))}
+          </div>
+          <div className="text-[#53565B] text-right">
+            <p>© 2015 • 2024 | Asso Architects</p>
+            <p>Все права защищены</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 }

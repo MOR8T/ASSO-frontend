@@ -34,8 +34,8 @@ export default function Header() {
   ];
 
   return (
-    <header className="w-full px-5 border border-white mx-auto">
-      <div className="max-w-7xl mx-auto py-5 border border-white flex justify-between items-center">
+    <header className="w-full px-5 mx-auto">
+      <div className="max-w-7xl mx-auto py-7 flex justify-between items-center">
         <Link href="/">
           <Image src={logo} alt="ASSO logo" width={200} height={100} />
         </Link>
