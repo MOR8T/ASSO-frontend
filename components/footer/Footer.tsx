@@ -62,17 +62,19 @@ export default function Footer() {
 
   return (
     <footer className="">
-      <div className="bg-[#34393F] h-55 flex items-center justify-evenly">
-        {partners.map((partner) => (
-          <Image
-            key={partner.name}
-            src={partner.logo}
-            alt={`${partner.name} logo`}
-            width={150}
-            height={150}
-            // className="h-30 w-auto"
-          />
-        ))}
+      <div className="bg-[#34393F]">
+        <div className=" h-55 flex items-center justify-evenly max-w-8xl mx-auto">
+          {partners.map((partner) => (
+            <Image
+              key={partner.name}
+              src={partner.logo}
+              alt={`${partner.name} logo`}
+              width={150}
+              height={150}
+              // className="h-30 w-auto"
+            />
+          ))}
+        </div>
       </div>
 
       <div>

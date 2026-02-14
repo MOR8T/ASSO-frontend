@@ -33,3 +33,15 @@ body {
   min-height: 100vh;
   background: #31353b;
 }
+
+.max-min-h-h {
+  height: calc(100vh - 120px);
+  min-height: 700px;
+  max-height: 900px;
+}
+
+.max-min-h {
+  height: 100vh;
+  min-height: 700px;
+  max-height: 900px;
+}
