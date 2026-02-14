@@ -45,3 +45,13 @@ body {
   min-height: 700px;
   max-height: 900px;
 }
+
+.min-h {
+  height: 100vh;
+  min-height: 700px;
+}
+
+.max-h {
+  height: 100vh;
+  max-height: 900px;
+}

@@ -25,7 +25,7 @@ export default function OurWorks() {
   return (
     <div className="w-full max-min-h flex flex-col items-center justify-between">
       <div className="max-w-7xl w-full mx-auto">
-        <h1 className="text-[#DBDBDB] uppercase text-4xl font-extralight tracking-wider leading-none [font-stretch:condensed] mt-10">
+        <h1 className="text-[#DBDBDB] uppercase text-4xl font-extralight tracking-wider leading-none font-stretch-condensed mt-10">
           Наши работы
         </h1>
       </div>
@@ -55,10 +55,10 @@ export default function OurWorks() {
               /> */}
             </div>
             <div className="flex flex-col ">
-              <h4 className="text-[#DBDBDB] text-[28px] uppercase leading-[38px] [font-stretch:condensed]">
+              <h4 className="text-[#DBDBDB] text-[28px] uppercase leading-[38px] font-stretch-condensed">
                 {service.title}
               </h4>
-              <p className="text-[#DBDBDB] font-extralight text-[15px] uppercase max-w-62.5 [font-stretch:condensed]">
+              <p className="text-[#DBDBDB] font-extralight text-[15px] uppercase max-w-62.5 font-stretch-condensed">
                 {service.description}
               </p>
             </div>

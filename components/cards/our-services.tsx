@@ -28,7 +28,7 @@ export default function OurServices() {
   return (
     <div className="w-full max-min-h h-screen flex flex-col items-center justify-between">
       <div className="max-w-7xl w-full mx-auto">
-        <h1 className="text-[#DBDBDB] uppercase text-4xl font-extralight tracking-wider leading-none [font-stretch:condensed] mt-10">
+        <h1 className="text-[#DBDBDB] uppercase text-4xl font-extralight tracking-wider leading-none font-stretch-condensed mt-10">
           Наши услуги
         </h1>
       </div>
@@ -36,7 +36,7 @@ export default function OurServices() {
         {services.map((service) => (
           <div
             key={service.id}
-            className="flex flex-col items-center gap-10 bg-[rgb(79,83,92,0.2)] p-[50px_20px] text-center"
+            className="flex flex-col items-center gap-10 bg-[rgba(79,83,92,0.2)] p-[50px_20px] text-center"
           >
             <div className="w-[170px] h-[170px] grid place-content-center border-3 border-[#DBDBDB]">
               <Image
