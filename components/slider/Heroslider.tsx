@@ -2,9 +2,10 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Keyboard } from "swiper/modules";
+import { Autoplay, Keyboard, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
+import "swiper/css/pagination";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -111,6 +112,34 @@ export const Slider: React.FC<SliderProps> = ({
           object-fit: cover;
           display: block;
         }
+
+        /* Пагинация — горизонтальные линии как на референсе */
+        .s-root .swiper-pagination {
+          position: absolute;
+          bottom: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          display: flex;
+          align-items: center;
+          justify-content: start;
+          gap: 10px;
+          z-index: 10;
+          margin: 0 auto;
+          max-width: 1300px;
+          padding: 0 20px;
+        }
+        .s-root .swiper-pagination-bullet {
+          width: 32px;
+          height: 3px;
+          margin: 0;
+          border-radius: 0;
+          background: #31353B;
+          opacity: 1;
+          transition: background 0.25s ease;
+        }
+        .s-root .swiper-pagination-bullet-active {
+          background: #ff7d24;
+        }
       `}</style>
 
       <div
@@ -119,7 +148,7 @@ export const Slider: React.FC<SliderProps> = ({
         aria-label="Media slider"
       >
         <Swiper
-          modules={[Autoplay, Keyboard]}
+          modules={[Autoplay, Keyboard, Pagination]}
           onSwiper={(s) => {
             swiperRef.current = s;
           }}
@@ -129,6 +158,7 @@ export const Slider: React.FC<SliderProps> = ({
           grabCursor
           keyboard={{ enabled: true }}
           autoplay={{ delay: autoplayDelay, disableOnInteraction: false }}
+          pagination={{ clickable: true }}
           className=""
         >
           {slides.map((slide, i) => {
