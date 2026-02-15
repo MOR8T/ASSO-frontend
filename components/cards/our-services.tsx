@@ -44,7 +44,7 @@ export default function OurServices() {
                 height={100}
               />
             </div>
-            <h2 className="text-[#FF7D24] text-[28px] uppercase">
+            <h2 className="text-orange text-[28px] uppercase">
               {service.title}
             </h2>
             <div className="w-3 h-3 bg-[#DBDBDB] rounded-[50%]"></div>

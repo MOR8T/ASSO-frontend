@@ -6,11 +6,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import type { ProjectItem } from "@/components/cards/projects";
+import type { MediaImage } from "@/lib/project-page.types";
 import "@/styles/modals.css";
 
-type ProjectGalleryModalProps = {
-  projects: ProjectItem[];
+type ProjectPhotoGalleryModalProps = {
+  images: MediaImage[];
   initialIndex: number;
   onClose: () => void;
 };
@@ -21,11 +21,11 @@ const ZOOM_STEP = 0.5;
 const SWIPE_THRESHOLD = 80;
 const SLIDE_DRAG_CLAMP = 320;
 
-export default function ProjectGalleryModal({
-  projects,
+export default function ProjectPhotoGalleryModal({
+  images,
   initialIndex,
   onClose,
-}: ProjectGalleryModalProps) {
+}: ProjectPhotoGalleryModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -40,14 +40,11 @@ export default function ProjectGalleryModal({
     mode: "pan" | "slide";
   }>({ x: 0, y: 0, posX: 0, posY: 0, mode: "pan" });
   const slideDragOffsetRef = useRef(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(
-    null
-  );
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
 
-  const project = projects[currentIndex];
+  const image = images[currentIndex];
   const hasPrev = currentIndex > 0;
-  const hasNext = currentIndex < projects.length - 1;
+  const hasNext = currentIndex < images.length - 1;
 
   const goPrev = useCallback(() => {
     if (!hasPrev) return;
@@ -153,9 +150,7 @@ export default function ProjectGalleryModal({
   );
 
   const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      handlePointerMove(e.clientX, e.clientY);
-    },
+    (e: MouseEvent) => handlePointerMove(e.clientX, e.clientY),
     [handlePointerMove]
   );
 
@@ -187,13 +182,8 @@ export default function ProjectGalleryModal({
     }
   }, [hasNext, hasPrev, goNext, goPrev]);
 
-  const handleMouseUp = useCallback(() => {
-    handlePointerUp();
-  }, [handlePointerUp]);
-
-  const handleTouchEnd = useCallback(() => {
-    handlePointerUp();
-  }, [handlePointerUp]);
+  const handleMouseUp = useCallback(() => handlePointerUp(), [handlePointerUp]);
+  const handleTouchEnd = useCallback(() => handlePointerUp(), [handlePointerUp]);
 
   useEffect(() => {
     if (slideDirection === null) return;
@@ -245,16 +235,15 @@ export default function ProjectGalleryModal({
     };
   }, []);
 
-  if (!project) return null;
+  if (!image || images.length === 0) return null;
 
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center"
       role="dialog"
       aria-modal="true"
-      aria-label="Галерея проекта"
+      aria-label="Галерея фотографий"
     >
-      {/* Backdrop — светлый, клик закрывает */}
       <div
         className="absolute inset-0 animate-modal-backdrop backdrop-blur-sm"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
@@ -262,7 +251,6 @@ export default function ProjectGalleryModal({
         aria-hidden
       />
 
-      {/* Close button */}
       <button
         type="button"
         onClick={onClose}
@@ -274,7 +262,6 @@ export default function ProjectGalleryModal({
         </svg>
       </button>
 
-      {/* Zoom controls */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-white/10 rounded-full px-3 py-2">
         <button
           type="button"
@@ -303,7 +290,6 @@ export default function ProjectGalleryModal({
         </button>
       </div>
 
-      {/* Prev / Next */}
       {hasPrev && (
         <button
           type="button"
@@ -329,10 +315,8 @@ export default function ProjectGalleryModal({
         </button>
       )}
 
-      {/* Image container: zoom + pan — prevent click from closing modal */}
       <div
-        ref={containerRef}
-        className="absolute inset-0 flex items-center justify-center overflow-hidden touch-none pointer-events-none"
+        className="absolute inset-0 flex items-center justify-center overflow-hidden touch-none pointer-events-none min-w-0 min-h-0"
         style={{
           cursor:
             scale > 1
@@ -345,7 +329,7 @@ export default function ProjectGalleryModal({
         }}
       >
         <div
-          className="flex items-center justify-center w-full h-full select-none pointer-events-auto touch-none"
+          className="flex items-center justify-center w-full h-full min-w-0 min-h-0 overflow-hidden select-none pointer-events-auto touch-none"
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
           onWheel={handleWheel}
@@ -363,34 +347,22 @@ export default function ProjectGalleryModal({
         >
           <div
             key={currentIndex}
-            className={`relative flex items-center justify-center w-full h-full ${slideDirection === "left" ? "animate-modal-slide-left" : slideDirection === "right" ? "animate-modal-slide-right" : ""}`}
+            className={`relative flex items-center justify-center w-full h-full min-w-0 min-h-0 ${slideDirection === "left" ? "animate-modal-slide-left" : slideDirection === "right" ? "animate-modal-slide-right" : ""}`}
           >
-            <div
-              className="flex items-center justify-center w-full h-full"
-              style={{ transform: "scale(1.3)" }}
-            >
-              <img
-                src={project.icon.src}
-                alt={project.title}
-                className="max-w-full max-h-full w-auto h-auto object-contain"
-                draggable={false}
-                style={{ maxHeight: "100vh" }}
-              />
-            </div>
+            <img
+              src={image.url}
+              alt={image.alt ?? ""}
+              className="max-w-full max-h-full w-auto h-auto object-contain block"
+              draggable={false}
+              style={{ maxHeight: "100vh" }}
+            />
           </div>
         </div>
       </div>
 
-      {/* Caption */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-center px-4 animate-modal-content">
-        <p className="text-[#DBDBDB] text-lg uppercase font-stretch-condensed">
-          {project.title}
-        </p>
-        <p className="text-[#DBDBDB]/80 text-sm uppercase font-extralight font-stretch-condensed mt-1">
-          {project.description}
-        </p>
-        <p className="text-white/60 text-sm mt-2">
-          {currentIndex + 1} / {projects.length}
+        <p className="text-white/60 text-sm">
+          {currentIndex + 1} / {images.length}
         </p>
       </div>
     </div>

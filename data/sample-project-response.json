@@ -1,0 +1,111 @@
+{
+  "id": "proj-soft-minimalism",
+  "slug": "soft-minimalism",
+  "hero": {
+    "mediaType": "image",
+    "image": {
+      "url": "/images/test_slider.jpg",
+      "alt": "Интерьер, софт минимализм"
+    },
+    "videoUrl": null,
+    "title": "СОФТ МИНИМАЛИЗМ",
+    "location": "ТАДЖИКИСТАН, ДУШАНБЕ"
+  },
+  "descriptionSection": {
+    "description": "Asso Architects is committed to continuing to develop and study new trends in global architectural and design. We strongly believe that each project should be unique and individual, reflecting the dreams and aspirations of our clients. Our projects are the result of close collaboration with our clients, during which we strive to understand and realise their vision of an ideal space. Using the latest technologies and materials, we create unique and functional buildings and interiors that transform our clients lives, making them more comfortable and harmonious. We are proud of our efforts and creativity in creating unique architectural solutions. That is why we can confidently say that our projects change our clients' lives for the better and make their dreams come true. \n\n Our team is a collection of like-minded individuals united by a shared passion for architecture and design. The team is made up of talented architects, designers and engineers, each with significant experience and bringing a unique",
+    "characteristics": [
+      { "key": "ОБЪЕКТ", "value": "ДВУХКОМНАТНАЯ КВАРТИРА" },
+      { "key": "РАСПОЛОЖЕНИЕ", "value": "МОСКВА" },
+      { "key": "ПЛОЩАДЬ", "value": "50 KB.M" },
+      { "key": "ГОД", "value": "2018" },
+      { "key": "АВТОР ПРОЕКТА", "value": "ЭШМАТ ТОШМАТОВ" }
+    ]
+  },
+  "blocks": [
+    {
+      "type": "image",
+      "id": "block-hero-photo-1",
+      "data": {
+        "image": {
+          "url": "/images/image 1.png",
+          "alt": "Планировка квартиры"
+        }
+      }
+    },
+    {
+      "type": "description",
+      "id": "block-desc-1",
+      "data": {
+        "content": "Выполняем все работы по созданию дизайн проекта по реализации интерьера с полным декорированием объекта. Вы получите пространство, абсолютно готовое для жизни с комфортной и стильной средой.\n\nМы согласуем каждый этап: мебель, отделочные материалы, техника, сценарии освещения, наполнение гардеробных и другие важные моменты. Весь комплекс работ по созданию комфортного пространства — от реализации инженерных систем до стилизации вашего дома — мы берём на себя."
+      }
+    },
+    {
+      "type": "cta",
+      "id": "block-cta-360",
+      "data": {
+        "text": "СКАЧАТЬ ФАЙЛ ДЛЯ ПРОСМОТРА ПРОЕКТА В 360",
+        "downloadUrl": "/image/image 1.png",
+        "fileName": "soft-minimalism-360.pdf"
+      }
+    },
+    {
+      "type": "gallery",
+      "id": "block-gallery-1",
+      "data": {
+        "items": [
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Рабочая зона" },
+            "size": "1x1"
+          },
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Кухня-бар" },
+            "size": "1x1"
+          },
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Кухня вид" },
+            "size": "1x2"
+          },
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Спальная зона" },
+            "size": "2x1"
+          },
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Деталь" },
+            "size": "1x1"
+          },
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Деталь" },
+            "size": "1x1"
+          },
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Гостиная" },
+            "size": "2x2"
+          }
+        ]
+      }
+    },
+    {
+      "type": "description",
+      "id": "block-desc-2",
+      "data": {
+        "content": "Мы всегда начинаем работу с замеров и фотофиксации объекта нашими специалистами, а также с большой встречи для обсуждения и составления детального технического задания с заказчиком. По вашим пожеланиям прорабатываем наполнение каждой комнаты. Вы получаете 3 варианта планировочных решений с расстановкой мебели."
+      }
+    },
+    {
+      "type": "gallery",
+      "id": "block-gallery-2",
+      "data": {
+        "items": [
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Ванная" },
+            "size": "1x1"
+          },
+          {
+            "image": { "url": "/images/p_card.jpg", "alt": "Прихожая" },
+            "size": "1x1"
+          }
+        ]
+      }
+    }
+  ]
+}

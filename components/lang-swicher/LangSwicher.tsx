@@ -26,7 +26,7 @@ export default function LangSwicher() {
           <li
             onClick={() => onSelectLang(langsItem.value)}
             key={langsItem.value}
-            className={`cursor-pointer ${locale === langsItem.value ? "text-[#FF7D24]" : ""}`}
+            className={`cursor-pointer ${locale === langsItem.value ? "text-orange" : ""}`}
           >
             {langsItem.lang}
           </li>

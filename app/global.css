@@ -55,3 +55,19 @@ body {
   height: 100vh;
   max-height: 900px;
 }
+
+.text-orange {
+  color: #ff7d24;
+}
+
+.condensed-text {
+  font-family: 'Bahnschrift', sans-serif;
+  font-weight: 300;
+  font-size: 28px;
+  line-height: 1.4;
+  letter-spacing: 1.5px;
+  font-stretch: condensed; /* дополнительное сжатие */
+  color: #d1d5db;
+  background-color: #3f444b;
+  padding: 30px;
+}
