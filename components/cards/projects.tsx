@@ -52,7 +52,7 @@ export default function Projects({
                   }}
                 />
                 <div
-                  className="card-hover-image-fon absolute inset-0 bg-black/50 transition-opacity duration-200 opacity-0 group-hover:opacity-100"
+                  className="card-hover-image-fon absolute inset-0 bg-black/50"
                   aria-hidden
                 />
                 <div className="card-content absolute bottom-0 left-0 right-0 p-5 pr-6 pb-5 z-10 flex flex-col gap-0.5">
