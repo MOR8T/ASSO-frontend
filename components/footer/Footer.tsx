@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
+import "@/styles/footer.css";
 import footer_logo from "../../public/images/logos/footer_logo.svg";
 import exmapleVideo from "../../public/images/footer_video.png";
 import partner_1 from "../../public/images/logos/partner_1.svg";
@@ -62,18 +63,20 @@ export default function Footer() {
 
   return (
     <footer className="">
-      <div className="bg-[#34393F]">
-        <div className=" h-55 flex items-center justify-evenly max-w-8xl mx-auto">
-          {partners.map((partner) => (
-            <Image
-              key={partner.name}
-              src={partner.logo}
-              alt={`${partner.name} logo`}
-              width={150}
-              height={150}
-              // className="h-30 w-auto"
-            />
-          ))}
+      <div className="bg-[#34393F] overflow-hidden">
+        <div className="h-55 flex items-center">
+          <div className="footer-marquee-track flex items-center gap-16 shrink-0 py-4">
+            {[...partners, ...partners].map((partner, index) => (
+              <Image
+                key={`${partner.name}-${index}`}
+                src={partner.logo}
+                alt={`${partner.name} logo`}
+                width={150}
+                height={150}
+                className="shrink-0 object-contain w-auto h-30"
+              />
+            ))}
+          </div>
         </div>
       </div>
 

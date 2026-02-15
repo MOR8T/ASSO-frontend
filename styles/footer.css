@@ -1,0 +1,17 @@
+/* Бесконечная лента партнёров — плавный скролл влево */
+@keyframes footer-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.footer-marquee-track {
+  animation: footer-marquee 30s linear infinite;
+}
+
+.footer-marquee-track:hover {
+  animation-play-state: paused;
+}

@@ -86,18 +86,17 @@ export default function Employees() {
         {employees.map((item) => (
           <div key={item.id}>
             <div className="flex flex-col items-center gap-5 text-center z-20">
-              <div className="p-4 border-[2px] border-[#5b626b]">
+              <div className="p-4 border-2 border-[#5b626b] transition-all duration-300 ease-out hover:border-[#DBDBDB] hover:scale-[1.02]">
                 {item?.icon?.src ? (
                   <div
-                    className="w-[300px] h-[300px]"
+                    className="w-[300px] h-[300px] transition-transform duration-300 ease-out"
                     style={{
                       backgroundImage: `url(${item?.icon?.src})`,
                       backgroundRepeat: "no-repeat",
-                      //   backgroundOrigin:'border-box'
                       backgroundPosition: "center",
                       backgroundSize: "cover",
                     }}
-                  ></div>
+                  />
                 ) : (
                   <div className="w-[300px] h-[300px] bg-[rgba(79,83,92,0.2)] grid place-content-center">
                     <Image

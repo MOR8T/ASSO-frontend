@@ -33,7 +33,7 @@ export default function OurServices() {
         {services.map((service) => (
           <div
             key={service.id}
-            className="flex flex-col items-center gap-10 bg-[rgba(79,83,92,0.2)] p-[50px_20px] text-center"
+            className="flex flex-col items-center gap-10 bg-[rgba(79,83,92,0.2)] p-[50px_20px] text-center transition-all duration-300 ease-out hover:scale-[1.02]"
           >
             <div className="w-[170px] h-[170px] grid place-content-center border-3 border-[#DBDBDB]">
               <Image

@@ -32,7 +32,7 @@ export default function OurWorks() {
             key={service.id}
             className="flex flex-col items-center gap-5 text-center"
           >
-            <div className="p-4 border-[2px] border-[#5b626b]">
+            <div className="p-4 border-2 border-[#5b626b] transition-all duration-300 ease-out hover:border-[#DBDBDB] hover:scale-[1.02]">
               <div
                 className="w-[350px] h-[350px]"
                 style={{
