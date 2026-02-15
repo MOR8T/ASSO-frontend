@@ -1,6 +1,7 @@
 import user_icon from "../../public/images/icons/user.svg";
-import profile_img from '../../public/images/footer_video.png'
+import profile_img from "../../public/images/footer_video.png";
 import Image from "next/image";
+import Title from "../title/Title";
 
 export default function Employees() {
   const employees = [
@@ -80,11 +81,7 @@ export default function Employees() {
 
   return (
     <div className="w-full min-h-[700px] flex flex-col gap-20 items-center">
-      <div className="max-w-7xl w-full mx-auto">
-        <h1 className="text-[#DBDBDB] uppercase text-4xl font-extralight tracking-wider leading-none font-stretch-condensed mt-10">
-          Наша команда
-        </h1>
-      </div>
+      <Title>Наша команда</Title>
       <div className="flex flex-wrap items-center justify-center gap-12.5 max-w-6xl mb-40">
         {employees.map((item) => (
           <div key={item.id}>

@@ -62,7 +62,7 @@ export const DrawerMenu = ({ isOpen, onClose, menu }: DrawerProps) => {
                 className={`text-[#DBDBDB] font-stretch-condensed`}
               >
                 <Link
-                  href={`/${section?.url ?? "#"}`}
+                  href={`/projects/${section?.url ?? "#"}`}
                   className={`block text-orange-500 uppercase font-extralight text-[22px] mb-4 hover:text-orange-400 transition 
                   ${menu?.length == s_i + 1 && section?.children?.length == 0 ? "" : "border-b border-[#5B626B] pb-1"}`}
                   onClick={onClose}
@@ -74,7 +74,7 @@ export const DrawerMenu = ({ isOpen, onClose, menu }: DrawerProps) => {
                     {section?.children?.map((child, i) => (
                       <Link
                         key={child.id}
-                        href={`/${child.url}`}
+                        href={`/projects/${section?.url}/${child.url}`}
                         className={`block 
                         ${menu?.length == s_i + 1 && section?.children?.length == i + 1 ? "" : "border-b border-[#5B626B]"} 
                         ${section.children?.length == i + 1 ? "pb-6" : "pb-1"} 

@@ -2,6 +2,7 @@ import service_ison_1 from "../../public/images/icons/architecture.svg";
 import service_ison_2 from "../../public/images/icons/interior_design.svg";
 import service_ison_3 from "../../public/images/icons/construction.svg";
 import Image from "next/image";
+import Title from "../title/Title";
 
 export default function OurServices() {
   const services = [
@@ -27,11 +28,7 @@ export default function OurServices() {
 
   return (
     <div className="w-full max-min-h h-screen flex flex-col items-center justify-between">
-      <div className="max-w-7xl w-full mx-auto">
-        <h1 className="text-[#DBDBDB] uppercase text-4xl font-extralight tracking-wider leading-none font-stretch-condensed mt-10">
-          Наши услуги
-        </h1>
-      </div>
+      <Title>Наши услуги</Title>
       <div className="flex items-center justify-center gap-12.5 ">
         {services.map((service) => (
           <div

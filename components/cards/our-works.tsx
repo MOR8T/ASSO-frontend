@@ -1,4 +1,5 @@
 import test_img from "@/public/images/test_slider.jpg";
+import Title from "../title/Title";
 
 export default function OurWorks() {
   const services = [
@@ -24,11 +25,7 @@ export default function OurWorks() {
 
   return (
     <div className="w-full max-min-h flex flex-col items-center justify-between">
-      <div className="max-w-7xl w-full mx-auto">
-        <h1 className="text-[#DBDBDB] uppercase text-4xl font-extralight tracking-wider leading-none font-stretch-condensed mt-10">
-          Наши работы
-        </h1>
-      </div>
+      <Title>Наши работы</Title>
       <div className="flex items-center justify-center gap-12.5 ">
         {services.map((service) => (
           <div
