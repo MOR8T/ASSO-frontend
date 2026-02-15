@@ -2,6 +2,7 @@ import Title from "@/components/title/Title";
 import Projects from "@/components/cards/projects";
 import type { ProjectItem } from "@/components/cards/projects";
 import test_img from "@/public/images/test_slider.jpg";
+import { getMenuData, getCategoryTitle } from "@/lib/menuData";
 
 export default async function page({
   params,
@@ -9,6 +10,8 @@ export default async function page({
   params: Promise<{ category: string }>;
 }) {
   const { category } = await params;
+  const menu = await getMenuData();
+  const categoryTitle = getCategoryTitle(menu, category);
 
   const projectsDataSource: ProjectItem[] = [
     {
@@ -39,7 +42,7 @@ export default async function page({
 
   return (
     <div>
-      <Title textClass="text-2xl">{category}</Title>
+      <Title textClass="text-2xl">{categoryTitle}</Title>
       <div className="pb-20"></div>
       <Projects projectsDataSource={projectsDataSource} />
       <div className="pb-40"></div>
