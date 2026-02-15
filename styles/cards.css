@@ -1,0 +1,38 @@
+/* Карточка проекта — плавная анимация при наведении */
+.card-hover {
+  border: 2px solid transparent;
+  transition:
+    border-color 0.4s cubic-bezier(0.33, 1, 0.68, 1),
+    box-shadow 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.card-hover:hover {
+  border-color: #DBDBDB;
+}
+
+.card-hover-image,
+.card-hover-image-fon {
+  transition:
+    width 0.4s cubic-bezier(0.33, 1, 0.68, 1),
+    height 0.4s cubic-bezier(0.33, 1, 0.68, 1),
+    margin 0.4s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.card-hover:hover .card-hover-image,
+.card-hover:hover .card-hover-image-fon {
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  margin: auto;
+}
+
+.card-content {
+  padding: 20px 24px 20px 24px;
+  z-index: 10;
+  transition:
+    padding 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.card-hover:hover .card-content {
+  padding: 20px 24px 40px 44px;
+}
