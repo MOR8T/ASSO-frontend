@@ -27,11 +27,13 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    url("/images/fon/fon-elem.svg") repeat-y top  100vw auto,
+    #31353b;
+  background-color: #31353b;
   color: var(--foreground);
   font-family: "Bahnschrift", sans-serif;
   min-height: 100vh;
-  background: #31353b;
 }
 
 .max-min-h-h {
