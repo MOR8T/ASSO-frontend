@@ -32,23 +32,47 @@ export default function ProjectPageContent({
     [project],
   );
 
-  let blockImageIndex = 0;
-  if (project.hero.mediaType === "image") blockImageIndex += 1;
-  let galleryIndex = 0;
+  // Для каждого блока — индекс в galleryImages (для image) или startIndex (для gallery).
+  // Порядок совпадает с collectGalleryImages: hero → image-блоки и gallery по очереди.
+  const blockModalInfo = useMemo(() => {
+    const infos: Array<
+      | { type: "image"; index: number }
+      | { type: "gallery"; startIndex: number }
+      | null
+    > = [];
+    let idx = project.hero.mediaType === "image" ? 1 : 0;
+    let galleryOrdinal = 0;
+    for (const block of project.blocks) {
+      if (block.type === "image") {
+        infos.push({ type: "image", index: idx });
+        idx += 1;
+      } else if (block.type === "gallery") {
+        infos.push({
+          type: "gallery",
+          startIndex: galleryStartIndices[galleryOrdinal] ?? 0,
+        });
+        idx += block.data.items.length;
+        galleryOrdinal += 1;
+      } else {
+        infos.push(null);
+      }
+    }
+    return infos;
+  }, [project, galleryStartIndices]);
 
   const openModal = (index: number) => setModalIndex(index);
   const closeModal = () => setModalIndex(null);
 
-  const renderBlock = (block: ProjectPageBlock) => {
+  const renderBlock = (block: ProjectPageBlock, blockIndex: number) => {
+    const modalInfo = blockModalInfo[blockIndex];
     switch (block.type) {
       case "image": {
-        const currentIndex = blockImageIndex;
-        blockImageIndex += 1;
+        const index = modalInfo?.type === "image" ? modalInfo.index : 0;
         return (
           <BlockImage
             key={block.id}
             data={block.data}
-            onImageClick={() => openModal(currentIndex)}
+            onImageClick={() => openModal(index)}
           />
         );
       }
@@ -57,8 +81,8 @@ export default function ProjectPageContent({
       case "cta":
         return <BlockCta key={block.id} data={block.data} />;
       case "gallery": {
-        const startIndex = galleryStartIndices[galleryIndex] ?? 0;
-        galleryIndex += 1;
+        const startIndex =
+          modalInfo?.type === "gallery" ? modalInfo.startIndex : 0;
         return (
           <BlockGallery
             key={block.id}
@@ -83,7 +107,7 @@ export default function ProjectPageContent({
           }
         />
         <ProjectDescriptionSection section={project.descriptionSection} />
-        {project.blocks.map(renderBlock)}
+        {project.blocks.map((block, i) => renderBlock(block, i))}
       </main>
 
       {modalIndex !== null && galleryImages.length > 0 && (
