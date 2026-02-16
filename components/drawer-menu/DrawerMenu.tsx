@@ -50,7 +50,7 @@ export const DrawerMenu = ({ isOpen, onClose, menu }: DrawerProps) => {
       {/* Drawer */}
       <div
         className={`fixed top-0 right-0 z-50 h-full w-full sm:w-[320px] sm:mt-[101px]
-        bg-[rgba(43,53,59,0.85)]
+        bg-[rgba(49,53,59,0.95)]
         shadow-2xl transform transition-transform duration-300 ease-in-out
         ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
