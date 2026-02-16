@@ -24,9 +24,9 @@ export default function OurWorks() {
   ];
 
   return (
-    <div className="w-full max-min-h flex flex-col items-center justify-between">
+    <div className="w-full max-min-h flex flex-col lg:items-center lg:justify-between">
       <Title>Наши работы</Title>
-      <div className="flex items-center justify-center gap-12.5 ">
+      <div className="flex flex-wrap py-5 lg:items-center justify-center gap-12.5 ">
         {services.map((service) => (
           <div
             key={service.id}

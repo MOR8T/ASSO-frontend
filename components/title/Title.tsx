@@ -8,7 +8,7 @@ export default function Title({
   textClass?: string;
 }) {
   return (
-    <div className="max-w-7xl w-full mx-auto">
+    <div className="max-w-7xl px-5 w-full mx-auto">
       <h1
         className={`text-[#DBDBDB] uppercase text-2xl font-extralight tracking-wider leading-none font-stretch-condensed mt-10 ${textClass}`}
       >

@@ -56,12 +56,25 @@ body {
   max-height: 900px;
 }
 
+@media (max-width: 1024px) {
+  .max-min-h-h {
+    height: auto;
+    min-height: 700px;
+    max-height: none !important;
+  }
+  .max-min-h {
+    height: auto;
+    min-height: 700px;
+    max-height: none !important;
+  }
+}
+
 .text-orange {
   color: #ff7d24;
 }
 
 .condensed-text {
-  font-family: 'Bahnschrift', sans-serif;
+  font-family: "Bahnschrift", sans-serif;
   font-weight: 300;
   font-size: 28px;
   line-height: 1.4;

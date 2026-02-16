@@ -2,12 +2,17 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import "@/styles/footer.css";
 import footer_logo from "../../public/images/logos/footer_logo.svg";
-import exmapleVideo from "../../public/images/footer_video.png";
+import footerVideoThumb from "../../public/images/footer_video.png";
+import YouTubePlayer from "./YouTubePlayer";
 import partner_1 from "../../public/images/logos/partner_1.svg";
 import partner_2 from "../../public/images/logos/partner_2.svg";
 import partner_3 from "../../public/images/logos/partner_3.svg";
 import partner_4 from "../../public/images/logos/partner_4.svg";
 import partner_5 from "../../public/images/logos/partner_5.svg";
+
+// ID видео из ссылки YouTube: https://www.youtube.com/watch?v=VIDEO_ID
+const FOOTER_YOUTUBE_VIDEO_ID =
+  process.env.NEXT_PUBLIC_FOOTER_YOUTUBE_VIDEO_ID || "dQw4w9WgXcQ";
 
 export default function Footer() {
   const socialMediaLinks = [
@@ -80,12 +85,12 @@ export default function Footer() {
         </div>
       </div>
 
-      <div>
-        <Image
-          src={exmapleVideo}
-          alt="Example Video"
-          width={1920}
-          height={1080}
+      <div className="w-full">
+        <YouTubePlayer
+          videoId={FOOTER_YOUTUBE_VIDEO_ID}
+          thumbnail={footerVideoThumb}
+          thumbnailAlt="Превью промо ролика"
+          label="ПРОМО РОЛИК"
         />
       </div>
       {/* the last section */}
