@@ -17,12 +17,10 @@ type ProjectsProps = {
   projectsDataSource?: ProjectItem[];
 };
 
-export default function Projects({
-  projectsDataSource = [],
-}: ProjectsProps) {
+export default function Projects({ projectsDataSource = [] }: ProjectsProps) {
   const [modalIndex, setModalIndex] = useState<number | null>(null);
 
-  const openModal = (index: number) => setModalIndex(index);
+  // const openModal = (index: number) => setModalIndex(index);
   const closeModal = () => setModalIndex(null);
 
   if (!projectsDataSource.length) {
@@ -38,7 +36,7 @@ export default function Projects({
   return (
     <>
       <div className="grid grid-cols-2 gap-x-16 gap-y-16 max-w-7xl mx-auto">
-        {projectsDataSource.map((project, index) => {
+        {projectsDataSource.map((project) => {
           const content = (
             <div className="card-hover group">
               <div className="relative w-full h-[450px] overflow-hidden">
@@ -67,24 +65,14 @@ export default function Projects({
             </div>
           );
 
-          if (project.href) {
-            return (
-              <Link key={project.id} href={project.href} className="block">
-                {content}
-              </Link>
-            );
-          }
-
           return (
-            <button
+            <Link
               key={project.id}
-              type="button"
-              className="block w-full text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#DBDBDB] focus-visible:ring-offset-2 focus-visible:ring-offset-[#31353b]"
-              onClick={() => openModal(index)}
-              aria-label={`Открыть ${project.title}`}
+              href={`/project/${project.id}`}
+              className="block"
             >
               {content}
-            </button>
+            </Link>
           );
         })}
       </div>

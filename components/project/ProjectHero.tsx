@@ -38,7 +38,7 @@ export default function ProjectHero({ hero, onImageClick }: ProjectHeroProps) {
       ) : (
         <button
           type="button"
-          className="absolute inset-0 w-full h-full block focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white/50 relative"
+          className=" inset-0 w-full h-full block focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white/50 relative"
           onClick={hero.mediaType === "image" ? onImageClick : undefined}
           aria-label="Открыть в галерее"
         >

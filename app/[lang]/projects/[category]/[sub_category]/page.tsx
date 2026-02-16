@@ -3,6 +3,7 @@ import Title from "@/components/title/Title";
 import type { ProjectItem } from "@/components/cards/projects";
 import test_img from "@/public/images/test_slider.jpg";
 import { getMenuData, getCategoryTitle, getSubCategoryTitle } from "@/lib/menuData";
+import Link from "next/link";
 
 export default async function page({
   params,
@@ -44,7 +45,7 @@ export default async function page({
   return (
     <div>
       <Title textClass="text-2xl">
-        {categoryTitle} / <span style={{ color: "#FF7D24" }}>{subCategoryTitle}</span>
+        <Link href={`/projects/${category}`}>{categoryTitle}</Link> / <span style={{ color: "#FF7D24" }}>{subCategoryTitle}</span>
       </Title>
       <div className="pb-20"></div>
       <Projects projectsDataSource={projectsDataSource} />
