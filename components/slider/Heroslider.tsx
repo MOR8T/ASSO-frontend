@@ -6,6 +6,7 @@ import { Autoplay, Keyboard, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
+import { StaticImageData } from "next/image";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -17,7 +18,7 @@ const detectType = (src: string): MediaType =>
 
 export interface SlideItem {
   id: string | number;
-  src: string;
+  src: string | StaticImageData;
   type?: MediaType;
   alt: string;
   /** Thumbnail shown before video loads */
@@ -70,7 +71,7 @@ const VideoSlide: React.FC<{ slide: SlideItem; isActive: boolean }> = ({
       {slide.sources?.map((s) => (
         <source key={s.src} src={s.src} type={s.type} />
       ))}
-      {!slide.sources && <source src={slide.src} />}
+      {!slide.sources && <source src={slide.src as string} />}
     </video>
   );
 };
@@ -162,14 +163,14 @@ export const Slider: React.FC<SliderProps> = ({
           className=""
         >
           {slides.map((slide, i) => {
-            const mediaType = slide.type ?? detectType(slide.src);
+            const mediaType = slide.type ?? detectType(slide.src as string);
             return (
               <SwiperSlide key={slide.id}>
                 {mediaType === "video" ? (
                   <VideoSlide slide={slide} isActive={activeIndex === i} />
                 ) : (
                   <Image
-                    src={slide.src}
+                    src={slide.src as StaticImageData}
                     alt={slide.alt}
                     fill
                     className="s-media"
