@@ -2,7 +2,7 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import "@/styles/footer.css";
 import footer_logo from "../../public/images/logos/footer_logo.svg";
-import footerVideoThumb from "../../public/images/footer_video.png";
+import footerVideoThumb from "../../public/images/projects/tp-2-2.jpg";
 import YouTubePlayer from "./YouTubePlayer";
 import partner_1 from "../../public/images/logos/partner_1.svg";
 import partner_2 from "../../public/images/logos/partner_2.svg";

@@ -69,12 +69,11 @@ export default function YouTubePlayer({
         </>
       ) : (
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`}
           title="YouTube видео"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           className="absolute inset-0 w-full h-full"
-          muted
         />
       )}
     </div>
