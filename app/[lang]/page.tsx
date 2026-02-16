@@ -2,6 +2,8 @@
 import OurServices from "@/components/cards/our-services";
 import OurWorks from "@/components/cards/our-works";
 import HeroSlider, { SlideItem } from "@/components/slider/Heroslider";
+import { getMenuData } from "@/lib/menuData";
+import { getProjectsByCategory } from "@/lib/getProjectsByCategory";
 import text_image_1 from "@/public/images/test-slider-1.jpeg";
 import text_image_2 from "@/public/images/test-slider-2.jpg";
 import text_image_3 from "@/public/images/test-slider-3.jpg";
@@ -63,7 +65,12 @@ const slides: SlideItem[] = [
   },*/
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const menu = await getMenuData();
+  const firstCategory = menu[0]?.url ?? "archetectur_project";
+  const allProjects = await getProjectsByCategory(firstCategory);
+  const lastThreeProjects = allProjects.slice(-3);
+
   return (
     <main className="w-full ">
       <HeroSlider
@@ -73,7 +80,7 @@ export default function HomePage() {
         aspectRatio="16/9" // "21/9" for cinematic, "4/3" for square-ish
       />
       <OurServices />
-      <OurWorks />
+      <OurWorks projects={lastThreeProjects} />
     </main>
   );
 }
