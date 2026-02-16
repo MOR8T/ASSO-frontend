@@ -1,83 +1,10 @@
 import user_icon from "../../public/images/icons/user.svg";
-import profile_img from "../../public/images/footer_video.png";
 import Image from "next/image";
 import Title from "../title/Title";
+import { getEmployees } from "@/lib/getEmployees";
 
-export default function Employees() {
-  const employees = [
-    {
-      id: 1,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: null,
-    },
-    {
-      id: 2,
-      full_name: "Имя Фамилия",
-      jobtitle: "Дизайнер",
-      icon: profile_img,
-    },
-    {
-      id: 3,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: profile_img,
-    },
-    {
-      id: 4,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: profile_img,
-    },
-    {
-      id: 5,
-      full_name: "Имя Фамилия",
-      jobtitle: "Дизайнер",
-      icon: null,
-    },
-    {
-      id: 6,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: null,
-    },
-    {
-      id: 7,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: null,
-    },
-    {
-      id: 8,
-      full_name: "Имя Фамилия",
-      jobtitle: "Дизайнер",
-      icon: null,
-    },
-    {
-      id: 9,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: null,
-    },
-    {
-      id: 10,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: null,
-    },
-    {
-      id: 11,
-      full_name: "Имя Фамилия",
-      jobtitle: "Дизайнер",
-      icon: null,
-    },
-    {
-      id: 12,
-      full_name: "Имя Фамилия",
-      jobtitle: "Архитектор",
-      icon: null,
-    },
-  ];
+export default async function Employees() {
+  const employees = await getEmployees();
 
   return (
     <div className="w-full min-h-[700px] flex flex-col gap-20 items-center">
