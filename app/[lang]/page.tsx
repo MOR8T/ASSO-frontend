@@ -2,21 +2,29 @@
 import OurServices from "@/components/cards/our-services";
 import OurWorks from "@/components/cards/our-works";
 import HeroSlider, { SlideItem } from "@/components/slider/Heroslider";
-import text_image from "@/public/images/test_slider.jpg";
+import text_image_1 from "@/public/images/test-slider-1.jpeg";
+import text_image_2 from "@/public/images/test-slider-2.jpg";
+import text_image_3 from "@/public/images/test-slider-3.jpg";
 
 const slides: SlideItem[] = [
   // ── 1. Regular image ──────────────────────────────────────────────────────
   {
     id: 1,
     type: "image", // optional — auto-detected from .jpg extension
-    src: text_image,
-    alt: "Modern urban park",
+    src: text_image_1,
+    alt: "Архитектура",
+  },
+  {
+    id: 2,
+    type: "image",
+    src: text_image_2,
+    alt: "Дизайн интерьера",
   },
   {
     id: 11,
     type: "image",
-    src: text_image,
-    alt: "Modern urban park",
+    src: text_image_3,
+    alt: "Строительство",
   },
   /*
   // ── 2. MP4 video ──────────────────────────────────────────────────────────
