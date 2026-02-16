@@ -3,12 +3,13 @@ import Image from "next/image";
 import logo from "../../public/images/logos/logo.svg";
 import menuIcon from "@/public/images/icons/menu.svg";
 import LangSwicher from "../lang-swicher/LangSwicher";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { DrawerMenu, DrawerItem } from "@/components/drawer-menu/DrawerMenu";
 import { useState, useEffect } from "react";
 import { getMenuData } from "@/lib/menuData";
 
 export default function Header() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [menuData, setMenuData] = useState<DrawerItem[]>([]);
 
@@ -52,11 +53,22 @@ export default function Header() {
         </Link>
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-5 text-[rgb(219,219,219)] uppercase">
-            {headers.map((header) => (
-              <Link key={header.id} href={`/${header.value}`}>
-                {header.title}
-              </Link>
-            ))}
+            {headers.map((header) => {
+              const isActive =
+                pathname === `/${header.value}` ||
+                pathname.startsWith(`/${header.value}/`);
+              return (
+                <Link
+                  key={header.id}
+                  href={`/${header.value}`}
+                  className={`transition-colors duration-150 hover:text-orange ${
+                    isActive ? "text-orange" : ""
+                  }`}
+                >
+                  {header.title}
+                </Link>
+              );
+            })}
           </div>
           <LangSwicher />
           <button onClick={() => setIsOpen(true)} className="cursor-pointer">

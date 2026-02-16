@@ -17,7 +17,7 @@ export default function ProjectDescriptionSection({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-9">
-            <div className="space-y-4 text-justify text-[#DBDBDB] text-base leading-relaxed tracking-wider">
+            <div className="space-y-4 text-justify text-[#DBDBDB] text-lg leading-relaxed tracking-wider">
               {paragraphs.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}

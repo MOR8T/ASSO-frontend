@@ -18,29 +18,29 @@ export default function Footer() {
   const socialMediaLinks = [
     {
       name: "Facebook",
-      url: "https://www.facebook.com/yourpage",
+      url: "https://www.facebook.com/asso.architects/",
       icon: "https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg",
     },
-    {
-      name: "Twitter",
-      url: "https://www.twitter.com/yourprofile",
-      icon: "https://www.twitter.com/favicon.ico",
-    },
+    // {
+    //   name: "Twitter",
+    //   url: "https://www.twitter.com/yourprofile",
+    //   icon: "https://www.twitter.com/favicon.ico",
+    // },
     {
       name: "Instagram",
-      url: "https://www.instagram.com/yourprofile",
+      url: "https://www.instagram.com/asso.architects/",
       icon: "https://cdn.pixabay.com/photo/2021/06/15/12/14/instagram-6338393_1280.png",
     },
     {
       name: "LinkedIn",
-      url: "https://www.linkedin.com/in/yourprofile",
-      icon: "https://www.linkedin.com/favicon.ico",
+      url: "https://www.linkedin.com/company/asso-architects/",
+      icon: "https://upload.wikimedia.org/wikipedia/commons/f/f8/LinkedIn_icon_circle.svg",
     },
-    {
-      name: "YouTube",
-      url: "https://www.youtube.com/channel/yourchannel",
-      icon: "https://upload.wikimedia.org/wikipedia/commons/f/fc/YouTube_play_button_square_%282013-2017%29.svg",
-    },
+    // {
+    //   name: "YouTube",
+    //   url: "https://www.youtube.com/channel/yourchannel",
+    //   icon: "https://upload.wikimedia.org/wikipedia/commons/f/fc/YouTube_play_button_square_%282013-2017%29.svg",
+    // },
   ];
 
   const partners = [
@@ -97,7 +97,12 @@ export default function Footer() {
       <div className="w-full px-5 mx-auto mt-[200px]">
         <div className="max-w-7xl mx-auto py-7 flex justify-between items-center border-t border-[#5B626B]">
           <Link href="/">
-            <Image src={footer_logo} alt="Логотип ASSO" width={200} height={100} />
+            <Image
+              src={footer_logo}
+              alt="Логотип ASSO"
+              width={200}
+              height={100}
+            />
           </Link>
           <div className="flex items-center gap-4">
             {socialMediaLinks.map((link) => (
@@ -107,14 +112,14 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <div className="bg-[#53565B] w-10 h-10 rounded-[20px]">
-                  {/* <Image
+                <div className="bg-[#53565B] overflow-hidden w-10 h-10 rounded-[20px]">
+                  <img
                     src={link.icon}
                     alt={`${link.name}`}
                     width={40}
                     height={40}
-                    className="mx-auto my-2"
-                  /> */}
+                    className=""
+                  />
                 </div>
               </a>
             ))}
