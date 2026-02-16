@@ -31,7 +31,7 @@ export default function YouTubePlayer({
 
   return (
     <div
-      className={`relative w-full overflow-hidden bg-black aspect-video ${className}`}
+      className={`relative w-full max-h-[660px] overflow-hidden bg-black aspect-video ${className}`}
       style={{ aspectRatio: "16/9" }}
     >
       {!isPlaying ? (
@@ -74,6 +74,7 @@ export default function YouTubePlayer({
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
           className="absolute inset-0 w-full h-full"
+          muted
         />
       )}
     </div>

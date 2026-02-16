@@ -15,7 +15,7 @@ const menuData: DrawerItem[] = [
   },
   {
     id: "2",
-    title: "ДИЗАЙН ИНТЕРЬЕРЫ",
+    title: "ДИЗАЙН ИНТЕРЬЕРОВ",
     url: "interior_design",
     children: [
       { id: "2-1", title: "ДОМА И КОТТЕДЖИ", url: "houses_and_cottages" },
@@ -25,7 +25,7 @@ const menuData: DrawerItem[] = [
   },
   {
     id: "3",
-    title: "Мебель и освешение",
+    title: "Мебель и освещение",
     url: "furniture_and_decoration",
     children: [],
   },

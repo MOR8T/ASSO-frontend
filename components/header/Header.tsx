@@ -48,7 +48,7 @@ export default function Header() {
     <header className="w-full px-5 mx-auto">
       <div className="max-w-7xl mx-auto py-7 flex justify-between items-center">
         <Link href="/">
-          <Image src={logo} alt="ASSO logo" width={200} height={100} />
+          <Image src={logo} alt="Логотип ASSO" width={200} height={100} />
         </Link>
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-5 text-[rgb(219,219,219)] uppercase">
@@ -60,7 +60,7 @@ export default function Header() {
           </div>
           <LangSwicher />
           <button onClick={() => setIsOpen(true)} className="cursor-pointer">
-            <Image src={menuIcon} alt="Menu icon" width={28} height={28} />
+            <Image src={menuIcon} alt="Иконка меню" width={28} height={28} />
           </button>
         </div>
       </div>

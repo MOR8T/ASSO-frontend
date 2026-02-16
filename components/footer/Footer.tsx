@@ -12,7 +12,7 @@ import partner_5 from "../../public/images/logos/partner_5.svg";
 
 // ID видео из ссылки YouTube: https://www.youtube.com/watch?v=VIDEO_ID
 const FOOTER_YOUTUBE_VIDEO_ID =
-  process.env.NEXT_PUBLIC_FOOTER_YOUTUBE_VIDEO_ID || "dQw4w9WgXcQ";
+  process.env.NEXT_PUBLIC_FOOTER_YOUTUBE_VIDEO_ID || "TYV1akotvSc";
 
 export default function Footer() {
   const socialMediaLinks = [
@@ -45,23 +45,23 @@ export default function Footer() {
 
   const partners = [
     {
-      name: "Partner 1",
+      name: "Партнёр 1",
       logo: partner_1,
     },
     {
-      name: "Partner 2",
+      name: "Партнёр 2",
       logo: partner_2,
     },
     {
-      name: "Partner 3",
+      name: "Партнёр 3",
       logo: partner_3,
     },
     {
-      name: "Partner 4",
+      name: "Партнёр 4",
       logo: partner_4,
     },
     {
-      name: "Partner 5",
+      name: "Партнёр 5",
       logo: partner_5,
     },
   ];
@@ -75,7 +75,7 @@ export default function Footer() {
               <Image
                 key={`${partner.name}-${index}`}
                 src={partner.logo}
-                alt={`${partner.name} logo`}
+                alt={`Логотип ${partner.name}`}
                 width={150}
                 height={150}
                 className="shrink-0 object-contain w-auto h-30"
@@ -93,11 +93,11 @@ export default function Footer() {
           label="ПРОМО РОЛИК"
         />
       </div>
-      {/* the last section */}
+      {/* последняя секция */}
       <div className="w-full px-5 mx-auto mt-[200px]">
         <div className="max-w-7xl mx-auto py-7 flex justify-between items-center border-t border-[#5B626B]">
           <Link href="/">
-            <Image src={footer_logo} alt="ASSO logo" width={200} height={100} />
+            <Image src={footer_logo} alt="Логотип ASSO" width={200} height={100} />
           </Link>
           <div className="flex items-center gap-4">
             {socialMediaLinks.map((link) => (

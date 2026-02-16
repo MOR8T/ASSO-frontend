@@ -93,7 +93,7 @@ export const DrawerMenu = ({ isOpen, onClose, menu }: DrawerProps) => {
           {/* Home button */}
           <div className="flex justify-center mt-10">
             <Link href="/" onClick={onClose}>
-              <Image src={home_icon} alt="close" width={28} height={28} />
+              <Image src={home_icon} alt="На главную" width={28} height={28} />
             </Link>
           </div>
         </div>

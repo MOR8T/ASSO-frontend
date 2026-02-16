@@ -8,20 +8,20 @@ export default function OurServices() {
   const services = [
     {
       id: 1,
-      title: "architecture",
-      description: "DEVELOPMENT OF ARCHITECTURAL AND STRUCTURAL SOLUTIONS",
+      title: "Архитектура",
+      description: "РАЗРАБОТКА АРХИТЕКТУРНЫХ И КОНСТРУКТИВНЫХ РЕШЕНИЙ",
       icon: service_ison_1,
     },
     {
       id: 2,
-      title: "interior design",
-      description: "DESIGN OF RESIDENTIAL AND COMMERCIAL PREMISES",
+      title: "Дизайн интерьера",
+      description: "ПРОЕКТИРОВАНИЕ ЖИЛЫХ И КОММЕРЧЕСКИХ ПОМЕЩЕНИЙ",
       icon: service_ison_2,
     },
     {
       id: 3,
-      title: "construction",
-      description: "REALISATION OF REPAIR AND CONSTRUCTION WORKS",
+      title: "Строительство",
+      description: "ВЫПОЛНЕНИЕ РЕМОНТНЫХ И СТРОИТЕЛЬНЫХ РАБОТ",
       icon: service_ison_3,
     },
   ];

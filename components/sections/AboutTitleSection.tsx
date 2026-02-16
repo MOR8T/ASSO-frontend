@@ -2,28 +2,28 @@ export default function AboutTitleSection() {
   return (
     <div className="max-min-h mt-[-102px] max-w-245 mx-auto text-[rgb(219,219,219)] flex flex-col justify-center gap-10 text-2xl font-extralight tracking-wider leading-none font-stretch-condensed">
       <h3>
-        Asso Architects is committed to continuing to develop and study new
-        trends in global architectural and design. We strongly believe that each
-        project should be unique and individual, reflecting the dreams and
-        aspirations of our clients. Our projects are the result of close
-        collaboration with our clients, during which we strive to understand and
-        realise their vision of an ideal space. Using the latest technologies
-        and materials, we create unique and functional buildings and interiors
-        that transform our clients' lives, making them more comfortable and
-        harmonious. We are proud of our efforts and creativity in creating
-        unique architectural solutions. That is why we can confidently say that
-        our projects change our clients' lives for the better and make their
-        dreams come true.
+        Asso Architects стремится продолжать развивать и изучать новые
+        тенденции в мировой архитектуре и дизайне. Мы твёрдо убеждены, что каждый
+        проект должен быть уникальным и индивидуальным, отражающим мечты и
+        устремления наших заказчиков. Наши проекты — результат тесного
+        сотрудничества с клиентами, в ходе которого мы стремимся понять и
+        воплотить их видение идеального пространства. Используя новейшие
+        технологии и материалы, мы создаём уникальные и функциональные здания и
+        интерьеры, которые преображают жизнь наших клиентов, делая её более
+        комфортной и гармоничной. Мы гордимся своими усилиями и творческим
+        подходом к созданию уникальных архитектурных решений. Именно поэтому мы
+        с уверенностью можем сказать, что наши проекты меняют жизнь клиентов к
+        лучшему и воплощают их мечты в реальность.
       </h3>
       <h3>
-        Our team is a collection of like-minded individuals united by a shared
-        passion for architecture and design. The team is made up of talented
-        architects, designers and engineers, each with significant experience
-        and bringing a unique perspective to projects. We pride ourselves on
-        having people from different languages and cultures, which adds
-        character and depth to our work. This cultural diversity inspires new
-        creative ideas and innovative approaches, enabling us to deliver
-        exceptional architectural solutions.
+        Наша команда — это коллектив единомышленников, объединённых общей
+        страстью к архитектуре и дизайну. В команду входят талантливые
+        архитекторы, дизайнеры и инженеры, каждый из которых имеет значительный
+        опыт и привносит уникальный взгляд в проекты. Мы гордимся тем, что в
+        нашей команде есть люди разных языков и культур, что придаёт нашему
+        творчеству характер и глубину. Это культурное разнообразие вдохновляет
+        на новые творческие идеи и нестандартные подходы и позволяет создавать
+        выдающиеся архитектурные решения.
       </h3>
     </div>
   );
