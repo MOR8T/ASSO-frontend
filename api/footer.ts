@@ -9,6 +9,7 @@ const API_BASE =
 const FOOTER_URL = "/api/v1/footer";
 const FOOTER_PARTNERS = `${FOOTER_URL}/partners`;
 const FOOTER_VIDEO = `${FOOTER_URL}/video`;
+const FOOTER_CONTACTS = `${FOOTER_URL}/contacts`;
 
 import {
   getStoredAccessToken,
@@ -246,4 +247,82 @@ export async function putFooterVideo(
     throw new Error(msg);
   }
   return data as FooterVideoAdmin;
+}
+
+// ─── Admin: контакты (с токеном) ───────────────────────────────────────────
+
+/** Контакт для админки (GET/POST/PATCH response) */
+export interface FooterContactAdmin {
+  id: number;
+  city_country: string;
+  address: string | null;
+  contact: string | null;
+  sort_order: number;
+}
+
+/** GET /api/v1/footer/contacts */
+export async function listContacts(): Promise<FooterContactAdmin[]> {
+  const res = await ensureAuthAndFetch(`${API_BASE.replace(/\/$/, "")}${FOOTER_CONTACTS}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = typeof data.detail === "string" ? data.detail : "Ошибка загрузки контактов";
+    throw new Error(msg);
+  }
+  return data as FooterContactAdmin[];
+}
+
+/** POST /api/v1/footer/contacts */
+export async function createContact(payload: {
+  city_country: string;
+  address?: string | null;
+  contact?: string | null;
+  sort_order: number;
+}): Promise<FooterContactAdmin> {
+  const res = await ensureAuthAndFetch(
+    `${API_BASE.replace(/\/$/, "")}${FOOTER_CONTACTS}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = typeof data.detail === "string" ? data.detail : "Ошибка создания контакта";
+    throw new Error(msg);
+  }
+  return data as FooterContactAdmin;
+}
+
+/** PATCH /api/v1/footer/contacts/{id} */
+export async function updateContact(
+  contactId: number,
+  payload: { city_country?: string; address?: string | null; contact?: string | null; sort_order?: number }
+): Promise<FooterContactAdmin> {
+  const res = await ensureAuthAndFetch(
+    `${API_BASE.replace(/\/$/, "")}${FOOTER_CONTACTS}/${contactId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = typeof data.detail === "string" ? data.detail : "Ошибка обновления контакта";
+    throw new Error(msg);
+  }
+  return data as FooterContactAdmin;
+}
+
+/** DELETE /api/v1/footer/contacts/{id} */
+export async function deleteContact(contactId: number): Promise<void> {
+  const res = await ensureAuthAndFetch(
+    `${API_BASE.replace(/\/$/, "")}${FOOTER_CONTACTS}/${contactId}`,
+    { method: "DELETE" }
+  );
+  if (res.status === 204) return;
+  const data = await res.json().catch(() => ({}));
+  const msg = typeof data.detail === "string" ? data.detail : "Ошибка удаления";
+  throw new Error(msg);
 }

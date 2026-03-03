@@ -11,9 +11,14 @@ import {
   deletePartner,
   getFooterVideo,
   putFooterVideo,
+  listContacts,
+  createContact,
+  updateContact,
+  deleteContact,
   AUTH_REQUIRED,
   type FooterPartnerAdmin,
   type FooterVideoAdmin,
+  type FooterContactAdmin,
 } from "@/api/footer";
 import { uploadFile } from "@/api/files";
 
@@ -74,6 +79,20 @@ export default function AdminFooterPage() {
   const [videoThumbFile, setVideoThumbFile] = useState<File | null>(null);
   const [videoSaving, setVideoSaving] = useState(false);
 
+  const [contacts, setContacts] = useState<FooterContactAdmin[]>([]);
+  const [contactsLoading, setContactsLoading] = useState(false);
+  const [contactCityCountry, setContactCityCountry] = useState("");
+  const [contactAddress, setContactAddress] = useState("");
+  const [contactContact, setContactContact] = useState("");
+  const [contactSortOrder, setContactSortOrder] = useState(0);
+  const [contactSubmitLoading, setContactSubmitLoading] = useState(false);
+  const [contactDeletingId, setContactDeletingId] = useState<number | null>(null);
+  const [contactEditingId, setContactEditingId] = useState<number | null>(null);
+  const [contactEditCityCountry, setContactEditCityCountry] = useState("");
+  const [contactEditAddress, setContactEditAddress] = useState("");
+  const [contactEditContact, setContactEditContact] = useState("");
+  const [contactEditSortOrder, setContactEditSortOrder] = useState(0);
+
   const loadPartners = useCallback(async () => {
     setPartnersLoading(true);
     try {
@@ -115,6 +134,24 @@ export default function AdminFooterPage() {
     }
   }, [router]);
 
+  const loadContacts = useCallback(async () => {
+    setContactsLoading(true);
+    try {
+      const list = await listContacts();
+      setContacts(list);
+      setError(null);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Ошибка загрузки контактов";
+      if (msg === AUTH_REQUIRED) {
+        router.replace("/login");
+        return;
+      }
+      setError(msg);
+    } finally {
+      setContactsLoading(false);
+    }
+  }, [router]);
+
   useEffect(() => {
     const token = getStoredAccessToken();
     if (!token) {
@@ -123,14 +160,14 @@ export default function AdminFooterPage() {
     }
     me(token)
       .then(async () => {
-        await Promise.all([loadPartners(), loadVideo()]);
+        await Promise.all([loadPartners(), loadVideo(), loadContacts()]);
       })
       .catch(() => {
         setError("Сессия недействительна");
         router.replace("/login");
       })
       .finally(() => setLoading(false));
-  }, [router, loadPartners, loadVideo]);
+  }, [router, loadPartners, loadVideo, loadContacts]);
 
   const clearMessages = () => {
     setError(null);
@@ -275,6 +312,80 @@ export default function AdminFooterPage() {
       setError(e instanceof Error ? e.message : "Ошибка сохранения видео");
     } finally {
       setVideoSaving(false);
+    }
+  };
+
+  const handleSubmitContact = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearMessages();
+    const city_country = contactCityCountry.trim();
+    if (!city_country) {
+      setError("Введите город и страну");
+      return;
+    }
+    setContactSubmitLoading(true);
+    try {
+      await createContact({
+        city_country,
+        address: contactAddress.trim() || null,
+        contact: contactContact.trim() || null,
+        sort_order: contactSortOrder,
+      });
+      setSuccessMessage("Контакт добавлен");
+      setContactCityCountry("");
+      setContactAddress("");
+      setContactContact("");
+      setContactSortOrder(contacts.length > 0 ? Math.max(...contacts.map((c) => c.sort_order), 0) + 1 : 0);
+      await loadContacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка добавления контакта");
+    } finally {
+      setContactSubmitLoading(false);
+    }
+  };
+
+  const handleDeleteContact = async (id: number) => {
+    clearMessages();
+    setContactDeletingId(id);
+    try {
+      await deleteContact(id);
+      setSuccessMessage("Контакт удалён");
+      await loadContacts();
+      if (contactEditingId === id) setContactEditingId(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка удаления");
+    } finally {
+      setContactDeletingId(null);
+    }
+  };
+
+  const handleStartEditContact = (c: FooterContactAdmin) => {
+    setContactEditingId(c.id);
+    setContactEditCityCountry(c.city_country);
+    setContactEditAddress(c.address ?? "");
+    setContactEditContact(c.contact ?? "");
+    setContactEditSortOrder(c.sort_order);
+  };
+
+  const handleSaveContact = async (id: number) => {
+    clearMessages();
+    const city_country = contactEditCityCountry.trim();
+    if (!city_country) {
+      setError("Город и страна обязательны");
+      return;
+    }
+    try {
+      await updateContact(id, {
+        city_country,
+        address: contactEditAddress.trim() || null,
+        contact: contactEditContact.trim() || null,
+        sort_order: contactEditSortOrder,
+      });
+      setSuccessMessage("Контакт обновлён");
+      setContactEditingId(null);
+      await loadContacts();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка обновления контакта");
     }
   };
 
@@ -533,6 +644,147 @@ export default function AdminFooterPage() {
               {videoSaving ? "Сохранение…" : "Сохранить видео"}
             </button>
           </form>
+        )}
+      </section>
+
+      {/* Контакты */}
+      <section className="rounded-xl bg-[#3f444b] p-6 text-gray-300 mb-6">
+        <h2 className="text-lg font-medium text-gray-100 mb-4">Контакты</h2>
+
+        <form onSubmit={handleSubmitContact} className="mb-6 flex flex-wrap items-end gap-4">
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Город и страна</label>
+            <input
+              type="text"
+              value={contactCityCountry}
+              onChange={(e) => setContactCityCountry(e.target.value)}
+              placeholder="Москва, Россия"
+              className="w-48 px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Адрес</label>
+            <input
+              type="text"
+              value={contactAddress}
+              onChange={(e) => setContactAddress(e.target.value)}
+              placeholder="ул. Примерная, 1"
+              className="w-56 px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Контакт</label>
+            <input
+              type="text"
+              value={contactContact}
+              onChange={(e) => setContactContact(e.target.value)}
+              placeholder="+7 (495) 123-45-67"
+              className="w-48 px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Порядок</label>
+            <input
+              type="number"
+              min={0}
+              value={contactSortOrder}
+              onChange={(e) => setContactSortOrder(Number(e.target.value) || 0)}
+              className="w-20 px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={contactSubmitLoading}
+            className="px-4 py-2 rounded-lg bg-[#ff7d24] text-white font-medium hover:bg-[#e66f1a] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {contactSubmitLoading ? "Добавление…" : "Добавить контакт"}
+          </button>
+        </form>
+
+        {contactsLoading ? (
+          <p className="text-gray-500">Загрузка списка...</p>
+        ) : contacts.length === 0 ? (
+          <p className="text-gray-500">Контактов пока нет.</p>
+        ) : (
+          <ul className="space-y-3">
+            {contacts.map((c) => (
+              <li
+                key={c.id}
+                className="py-3 border-b border-[#53565B] last:border-0"
+              >
+                {contactEditingId === c.id ? (
+                  <div className="flex flex-wrap items-end gap-3">
+                    <input
+                      type="text"
+                      value={contactEditCityCountry}
+                      onChange={(e) => setContactEditCityCountry(e.target.value)}
+                      placeholder="Город и страна"
+                      className="w-44 px-2 py-1.5 rounded bg-[#2a2e33] border border-[#53565B] text-gray-100 text-sm"
+                    />
+                    <input
+                      type="text"
+                      value={contactEditAddress}
+                      onChange={(e) => setContactEditAddress(e.target.value)}
+                      placeholder="Адрес"
+                      className="w-44 px-2 py-1.5 rounded bg-[#2a2e33] border border-[#53565B] text-gray-100 text-sm"
+                    />
+                    <input
+                      type="text"
+                      value={contactEditContact}
+                      onChange={(e) => setContactEditContact(e.target.value)}
+                      placeholder="Контакт"
+                      className="w-40 px-2 py-1.5 rounded bg-[#2a2e33] border border-[#53565B] text-gray-100 text-sm"
+                    />
+                    <input
+                      type="number"
+                      min={0}
+                      value={contactEditSortOrder}
+                      onChange={(e) => setContactEditSortOrder(Number(e.target.value) || 0)}
+                      className="w-16 px-2 py-1.5 rounded bg-[#2a2e33] border border-[#53565B] text-gray-100 text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleSaveContact(c.id)}
+                      className="text-sm text-[#ff7d24] hover:underline"
+                    >
+                      Сохранить
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setContactEditingId(null)}
+                      className="text-sm text-gray-500 hover:underline"
+                    >
+                      Отмена
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-100">{c.city_country}</p>
+                      {c.address && <p className="text-sm text-gray-500">{c.address}</p>}
+                      {c.contact && <p className="text-sm text-gray-500">{c.contact}</p>}
+                    </div>
+                    <span className="text-sm text-gray-500">Порядок: {c.sort_order}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleStartEditContact(c)}
+                      className="text-sm text-[#ff7d24] hover:underline"
+                    >
+                      Изменить
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteContact(c.id)}
+                      disabled={contactDeletingId === c.id}
+                      className="ml-auto px-3 py-1 rounded text-sm bg-red-900/50 text-red-200 hover:bg-red-900/70 disabled:opacity-50"
+                    >
+                      {contactDeletingId === c.id ? "Удаление…" : "Удалить"}
+                    </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
         )}
       </section>
     </div>

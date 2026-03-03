@@ -194,12 +194,22 @@ export default async function Footer() {
       {contacts.length > 0 && (
         <div className="w-full px-5 mx-auto mt-16">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-[#53565B]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-between">
               {contacts.map((c, i) => (
-                <div key={i} className="flex flex-col gap-1">
-                  <p className="font-medium text-[#DBDBDB]">{c.city_country}</p>
-                  {c.address && <p>{c.address}</p>}
-                  {c.contact && <p>{c.contact}</p>}
+                <div key={i} className="flex flex-col gap-2">
+                  <div className="inline-block">
+                    <p className="font-semibold text-[#E08C3B] uppercase tracking-wide">
+                      {c.city_country}
+                    </p>
+                    <span
+                      className="block h-px w-full bg-[#E08C3B] mt-0.5"
+                      aria-hidden
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1 text-[#DBDBDB]">
+                    {c.address && <p>{c.address}</p>}
+                    {c.contact && <p>{c.contact}</p>}
+                  </div>
                 </div>
               ))}
             </div>
