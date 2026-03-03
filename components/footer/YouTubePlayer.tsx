@@ -28,6 +28,8 @@ export default function YouTubePlayer({
   const thumbSrc = typeof thumbnail === "string" ? thumbnail : thumbnail.src;
   const thumbWidth = typeof thumbnail === "string" ? 1920 : thumbnail.width;
   const thumbHeight = typeof thumbnail === "string" ? 1080 : thumbnail.height;
+  /** Строковый URL (API/внешний) рендерим через <img>, чтобы превью гарантированно отображалось */
+  const isUrlString = typeof thumbnail === "string" && thumbSrc.startsWith("http");
 
   return (
     <div
@@ -42,13 +44,23 @@ export default function YouTubePlayer({
             className="absolute inset-0 w-full h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
             aria-label="Запустить видео"
           >
-            <Image
-              src={thumbSrc}
-              alt={thumbnailAlt}
-              width={thumbWidth}
-              height={thumbHeight}
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            />
+            {isUrlString ? (
+              <img
+                src={thumbSrc}
+                alt={thumbnailAlt}
+                width={thumbWidth}
+                height={thumbHeight}
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              />
+            ) : (
+              <Image
+                src={thumbSrc}
+                alt={thumbnailAlt}
+                width={thumbWidth}
+                height={thumbHeight}
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              />
+            )}
             <span className="absolute bottom-40 left-30 z-10 flex flex-col items-start justify-center gap-4 rounded-full shadow-[0px_0px_100px_10px] shadow-black bg-black/40">
               <span
                 className="w-30 h-30 border-2 border-[#DBDBDB] rounded-full bg-[rgba(49,53,59,0.8)] flex items-center justify-center shadow-lg hover:bg-[#3d4248] transition-colors shrink-0 mx-auto"

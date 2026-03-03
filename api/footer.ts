@@ -8,6 +8,7 @@ const API_BASE =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 const FOOTER_URL = "/api/v1/footer";
 const FOOTER_PARTNERS = `${FOOTER_URL}/partners`;
+const FOOTER_VIDEO = `${FOOTER_URL}/video`;
 
 import {
   getStoredAccessToken,
@@ -189,4 +190,60 @@ export async function deletePartner(partnerId: number): Promise<void> {
   const data = await res.json().catch(() => ({}));
   const msg = typeof data.detail === "string" ? data.detail : "Ошибка удаления";
   throw new Error(msg);
+}
+
+// ─── Admin: видео (один блок) ──────────────────────────────────────────────
+
+/** Конфиг видео для админки (GET/PUT response) */
+export interface FooterVideoAdmin {
+  id: number;
+  mode: "external" | "uploaded";
+  external_video_id: string | null;
+  video_path: string | null;
+  thumbnail_path: string | null;
+  label: string | null;
+}
+
+/** Тело обновления видео (PUT) */
+export interface FooterVideoUpdatePayload {
+  mode: "external" | "uploaded";
+  external_video_id?: string | null;
+  video_path?: string | null;
+  thumbnail_path?: string | null;
+  label?: string | null;
+}
+
+/** GET /api/v1/footer/video */
+export async function getFooterVideo(): Promise<FooterVideoAdmin | null> {
+  const res = await ensureAuthAndFetch(`${API_BASE.replace(/\/$/, "")}${FOOTER_VIDEO}`);
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg =
+      typeof (data as { detail?: string })?.detail === "string"
+        ? (data as { detail: string }).detail
+        : "Ошибка загрузки видео";
+    throw new Error(msg);
+  }
+  if (data === null || data === undefined) return null;
+  return data as FooterVideoAdmin;
+}
+
+/** PUT /api/v1/footer/video */
+export async function putFooterVideo(
+  payload: FooterVideoUpdatePayload
+): Promise<FooterVideoAdmin> {
+  const res = await ensureAuthAndFetch(
+    `${API_BASE.replace(/\/$/, "")}${FOOTER_VIDEO}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = typeof data.detail === "string" ? data.detail : "Ошибка сохранения видео";
+    throw new Error(msg);
+  }
+  return data as FooterVideoAdmin;
 }

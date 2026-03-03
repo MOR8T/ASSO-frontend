@@ -9,8 +9,11 @@ import {
   createPartner,
   updatePartner,
   deletePartner,
+  getFooterVideo,
+  putFooterVideo,
   AUTH_REQUIRED,
   type FooterPartnerAdmin,
+  type FooterVideoAdmin,
 } from "@/api/footer";
 import { uploadFile } from "@/api/files";
 
@@ -22,6 +25,25 @@ function partnerLogoUrl(logo_path: string): string {
     return logo_path;
   const base = API_BASE.replace(/\/$/, "");
   return logo_path.startsWith("/") ? `${base}${logo_path}` : `${base}/media/${logo_path}`;
+}
+
+/** Извлечь YouTube video ID из URL */
+function parseYouTubeId(url: string): string | null {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  try {
+    const u = new URL(trimmed);
+    if (u.hostname === "youtu.be" && u.pathname.slice(1)) return u.pathname.slice(1).split("?")[0];
+    if (u.hostname?.includes("youtube.com")) {
+      const v = u.searchParams.get("v");
+      if (v) return v;
+      const m = u.pathname.match(/^\/embed\/([^/?]+)/);
+      if (m) return m[1];
+    }
+  } catch {
+    return null;
+  }
+  return null;
 }
 
 export default function AdminFooterPage() {
@@ -43,6 +65,15 @@ export default function AdminFooterPage() {
   const [editingSortOrderId, setEditingSortOrderId] = useState<number | null>(null);
   const [editSortOrderValue, setEditSortOrderValue] = useState<number>(0);
 
+  const [videoConfig, setVideoConfig] = useState<FooterVideoAdmin | null>(null);
+  const [videoLoading, setVideoLoading] = useState(false);
+  const [videoMode, setVideoMode] = useState<"external" | "uploaded">("external");
+  const [videoExternalUrl, setVideoExternalUrl] = useState("");
+  const [videoLabel, setVideoLabel] = useState("");
+  const [videoVideoFile, setVideoVideoFile] = useState<File | null>(null);
+  const [videoThumbFile, setVideoThumbFile] = useState<File | null>(null);
+  const [videoSaving, setVideoSaving] = useState(false);
+
   const loadPartners = useCallback(async () => {
     setPartnersLoading(true);
     try {
@@ -61,6 +92,29 @@ export default function AdminFooterPage() {
     }
   }, [router]);
 
+  const loadVideo = useCallback(async () => {
+    setVideoLoading(true);
+    try {
+      const v = await getFooterVideo();
+      setVideoConfig(v);
+      if (v) {
+        setVideoMode(v.mode);
+        setVideoLabel(v.label ?? "");
+        if (v.mode === "external" && v.external_video_id) {
+          setVideoExternalUrl(`https://www.youtube.com/watch?v=${v.external_video_id}`);
+        }
+      }
+    } catch (e) {
+      if ((e as Error).message === AUTH_REQUIRED) {
+        router.replace("/login");
+        return;
+      }
+      setError((e as Error).message);
+    } finally {
+      setVideoLoading(false);
+    }
+  }, [router]);
+
   useEffect(() => {
     const token = getStoredAccessToken();
     if (!token) {
@@ -68,13 +122,15 @@ export default function AdminFooterPage() {
       return;
     }
     me(token)
-      .then(() => loadPartners())
+      .then(async () => {
+        await Promise.all([loadPartners(), loadVideo()]);
+      })
       .catch(() => {
         setError("Сессия недействительна");
         router.replace("/login");
       })
       .finally(() => setLoading(false));
-  }, [router, loadPartners]);
+  }, [router, loadPartners, loadVideo]);
 
   const clearMessages = () => {
     setError(null);
@@ -159,6 +215,66 @@ export default function AdminFooterPage() {
       await loadPartners();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Ошибка обновления");
+    }
+  };
+
+  const handleSaveVideo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearMessages();
+    setVideoSaving(true);
+    try {
+      let video_path: string | null = null;
+      let thumbnail_path: string | null = null;
+      let external_video_id: string | null = null;
+
+      if (videoMode === "uploaded") {
+        if (videoVideoFile) {
+          const res = await uploadFile(videoVideoFile);
+          video_path = res.path;
+        } else if (videoConfig?.mode === "uploaded" && videoConfig?.video_path) {
+          video_path = videoConfig.video_path;
+        } else {
+          setError("Выберите видеофайл");
+          setVideoSaving(false);
+          return;
+        }
+        if (videoThumbFile) {
+          const res = await uploadFile(videoThumbFile);
+          thumbnail_path = res.path;
+        } else if (videoConfig?.thumbnail_path) {
+          thumbnail_path = videoConfig.thumbnail_path;
+        }
+      } else {
+        const id = parseYouTubeId(videoExternalUrl);
+        if (!id) {
+          setError("Введите ссылку на YouTube (youtube.com/watch?v=… или youtu.be/…)");
+          setVideoSaving(false);
+          return;
+        }
+        external_video_id = id;
+        if (videoThumbFile) {
+          const res = await uploadFile(videoThumbFile);
+          thumbnail_path = res.path;
+        } else if (videoConfig?.thumbnail_path) {
+          thumbnail_path = videoConfig.thumbnail_path;
+        }
+      }
+
+      await putFooterVideo({
+        mode: videoMode,
+        external_video_id: videoMode === "external" ? external_video_id : null,
+        video_path: videoMode === "uploaded" ? video_path : null,
+        thumbnail_path: thumbnail_path || null,
+        label: videoLabel.trim() || null,
+      });
+      setSuccessMessage("Видео сохранено");
+      setVideoVideoFile(null);
+      setVideoThumbFile(null);
+      await loadVideo();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка сохранения видео");
+    } finally {
+      setVideoSaving(false);
     }
   };
 
@@ -322,6 +438,101 @@ export default function AdminFooterPage() {
               </li>
             ))}
           </ul>
+        )}
+      </section>
+
+      {/* Промо-видео */}
+      <section className="rounded-xl bg-[#3f444b] p-6 text-gray-300 mb-6">
+        <h2 className="text-lg font-medium text-gray-100 mb-4">Промо-видео</h2>
+
+        {videoLoading ? (
+          <p className="text-gray-500">Загрузка...</p>
+        ) : (
+          <form onSubmit={handleSaveVideo} className="space-y-4 max-w-xl">
+            <div>
+              <span className="block text-sm text-gray-400 mb-2">Источник</span>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="videoMode"
+                    checked={videoMode === "external"}
+                    onChange={() => setVideoMode("external")}
+                    className="text-[#ff7d24]"
+                  />
+                  <span>Ссылка (YouTube)</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="videoMode"
+                    checked={videoMode === "uploaded"}
+                    onChange={() => setVideoMode("uploaded")}
+                    className="text-[#ff7d24]"
+                  />
+                  <span>Загруженное видео</span>
+                </label>
+              </div>
+            </div>
+
+            {videoMode === "external" ? (
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">URL видео (YouTube)</label>
+                <input
+                  type="url"
+                  value={videoExternalUrl}
+                  onChange={(e) => setVideoExternalUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  className="w-full px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+                />
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">Видеофайл</label>
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => setVideoVideoFile(e.target.files?.[0] ?? null)}
+                  className="block w-full text-sm text-gray-400 file:mr-2 file:py-2 file:px-3 file:rounded file:border-0 file:bg-[#53565B] file:text-gray-200"
+                />
+                {videoConfig?.mode === "uploaded" && videoConfig.video_path && !videoVideoFile && (
+                  <p className="mt-1 text-xs text-gray-500">Текущий файл: {videoConfig.video_path}</p>
+                )}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Превью (постер, необязательно)</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setVideoThumbFile(e.target.files?.[0] ?? null)}
+                className="block w-full text-sm text-gray-400 file:mr-2 file:py-2 file:px-3 file:rounded file:border-0 file:bg-[#53565B] file:text-gray-200"
+              />
+              {videoConfig?.thumbnail_path && !videoThumbFile && (
+                <p className="mt-1 text-xs text-gray-500">Текущее: {videoConfig.thumbnail_path}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">Подпись</label>
+              <input
+                type="text"
+                value={videoLabel}
+                onChange={(e) => setVideoLabel(e.target.value)}
+                placeholder="ПРОМО РОЛИК"
+                className="w-full px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={videoSaving}
+              className="px-4 py-2 rounded-lg bg-[#ff7d24] text-white font-medium hover:bg-[#e66f1a] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {videoSaving ? "Сохранение…" : "Сохранить видео"}
+            </button>
+          </form>
         )}
       </section>
     </div>
