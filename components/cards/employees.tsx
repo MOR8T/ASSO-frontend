@@ -1,11 +1,13 @@
 import user_icon from "../../public/images/icons/user.svg";
 import Image from "next/image";
 import Title from "../title/Title";
-import { getEmployees } from "@/lib/getEmployees";
+import type { Employee } from "@/lib/employees.types";
 
-export default async function Employees() {
-  const employees = await getEmployees();
+type EmployeesProps = {
+  employees: Employee[];
+};
 
+export default function Employees({ employees }: EmployeesProps) {
   return (
     <div className="w-full min-h-[700px] flex flex-col gap-20 items-center">
       <Title>Наша команда</Title>
