@@ -8,5 +8,5 @@ export const config = {
   // - … if they start with `/api`, `/trpc`, `/_next` or `/_vercel`
   // - … /admin (админка без локали)
   // - … the ones containing a dot (e.g. `favicon.ico`)
-  matcher: "/((?!api|trpc|_next|_vercel|admin|.*\\..*).*)",
+  matcher: "/((?!api|trpc|_next|_vercel|admin|login|.*\\..*).*)",
 };
