@@ -4,68 +4,41 @@ import OurWorks from "@/components/cards/our-works";
 import HeroSlider, { SlideItem } from "@/components/slider/Heroslider";
 import { getMenuData } from "@/lib/menuData";
 import { getProjectsByCategory } from "@/lib/getProjectsByCategory";
+import { getHomeSliderList } from "@/api/slider";
 import text_image_1 from "@/public/images/test-slider-1.jpeg";
 import text_image_2 from "@/public/images/test-slider-2.jpg";
 import text_image_3 from "@/public/images/test-slider-3.jpg";
 
-const slides: SlideItem[] = [
-  // ── 1. Regular image ──────────────────────────────────────────────────────
-  {
-    id: 1,
-    type: "image", // optional — auto-detected from .jpg extension
-    src: text_image_1,
-    alt: "Архитектура",
-  },
-  {
-    id: 2,
-    type: "image",
-    src: text_image_2,
-    alt: "Дизайн интерьера",
-  },
-  {
-    id: 11,
-    type: "image",
-    src: text_image_3,
-    alt: "Строительство",
-  },
-  /*
-  // ── 2. MP4 video ──────────────────────────────────────────────────────────
-  {
-    id: 2,
-    type: "video", // explicit; or omit — .mp4 is auto-detected
-    src: "/slides/promo.mp4",
-    poster: "/slides/promo-poster.jpg", // thumbnail shown before play
-    alt: "Promo video",
-  },
-
-  // ── 3. GIF (treated as video for object-fit: cover rendering) ────────────
-  {
-    id: 3,
-    src: "/slides/animation.gif", // .gif → auto-detected as "video"
-    alt: "Animated landscape",
-  },
-
-  // ── 4. Multi-format video (webm first = smaller; mp4 = fallback) ─────────
-  {
-    id: 4,
-    src: "/slides/hero.mp4", // final fallback
-    alt: "Drone flyover",
-    poster: "/slides/hero-poster.jpg",
-    sources: [
-      { src: "/slides/hero.webm", type: "video/webm" },
-      { src: "/slides/hero.mp4", type: "video/mp4" },
-    ],
-  },
-
-  // ── 5. Image with no overlay ──────────────────────────────────────────────
-  {
-    id: 5,
-    src: "/slides/landscape.jpg",
-    alt: "Landscape architecture",
-  },*/
+const fallbackSlides: SlideItem[] = [
+  { id: 1, type: "image", src: text_image_1, alt: "Архитектура" },
+  { id: 2, type: "image", src: text_image_2, alt: "Дизайн интерьера" },
+  { id: 11, type: "image", src: text_image_3, alt: "Строительство" },
 ];
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const apiOrigin = API_BASE.replace(/\/$/, "");
+
+function toAbsoluteMediaUrl(path: string): string {
+  if (!path || path.startsWith("http://") || path.startsWith("https://")) return path;
+  return `${apiOrigin}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
 export default async function HomePage() {
+  let slides: SlideItem[];
+  try {
+    const list = await getHomeSliderList();
+    slides = list.map((s) => ({
+      id: s.id,
+      type: s.type,
+      src: toAbsoluteMediaUrl(s.src),
+      alt: s.alt,
+      poster: s.poster ? toAbsoluteMediaUrl(s.poster) : undefined,
+      sources: s.sources?.map((src) => ({ ...src, src: toAbsoluteMediaUrl(src.src) })),
+    }));
+  } catch {
+    slides = fallbackSlides;
+  }
+
   const menu = await getMenuData();
   const firstCategory = menu[0]?.url ?? "archetectur_project";
   const allProjects = await getProjectsByCategory(firstCategory);
@@ -77,7 +50,7 @@ export default async function HomePage() {
         slides={slides}
         autoplayDelay={5000}
         loop={true}
-        aspectRatio="16/9" // "21/9" for cinematic, "4/3" for square-ish
+        aspectRatio="16/9"
       />
       <OurServices />
       <OurWorks projects={lastThreeProjects} />

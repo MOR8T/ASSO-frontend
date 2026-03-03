@@ -164,10 +164,19 @@ export const Slider: React.FC<SliderProps> = ({
         >
           {slides.map((slide, i) => {
             const mediaType = slide.type ?? detectType(slide.src as string);
+            const isRemoteImage = typeof slide.src === "string";
             return (
               <SwiperSlide key={slide.id}>
                 {mediaType === "video" ? (
                   <VideoSlide slide={slide} isActive={activeIndex === i} />
+                ) : isRemoteImage ? (
+                  <img
+                    src={slide.src as string}
+                    alt={slide.alt}
+                    className="s-media"
+                    loading={i === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
                 ) : (
                   <Image
                     src={slide.src as StaticImageData}
