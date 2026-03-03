@@ -10,6 +10,7 @@ const FOOTER_URL = "/api/v1/footer";
 const FOOTER_PARTNERS = `${FOOTER_URL}/partners`;
 const FOOTER_VIDEO = `${FOOTER_URL}/video`;
 const FOOTER_CONTACTS = `${FOOTER_URL}/contacts`;
+const FOOTER_SOCIAL = `${FOOTER_URL}/social`;
 
 import {
   getStoredAccessToken,
@@ -319,6 +320,84 @@ export async function updateContact(
 export async function deleteContact(contactId: number): Promise<void> {
   const res = await ensureAuthAndFetch(
     `${API_BASE.replace(/\/$/, "")}${FOOTER_CONTACTS}/${contactId}`,
+    { method: "DELETE" }
+  );
+  if (res.status === 204) return;
+  const data = await res.json().catch(() => ({}));
+  const msg = typeof data.detail === "string" ? data.detail : "Ошибка удаления";
+  throw new Error(msg);
+}
+
+// ─── Admin: соцсети (с токеном) ────────────────────────────────────────────
+
+/** Соцсеть для админки (GET/POST/PATCH response) */
+export interface FooterSocialAdmin {
+  id: number;
+  name: string;
+  url: string;
+  icon_path: string;
+  sort_order: number;
+}
+
+/** GET /api/v1/footer/social */
+export async function listSocial(): Promise<FooterSocialAdmin[]> {
+  const res = await ensureAuthAndFetch(`${API_BASE.replace(/\/$/, "")}${FOOTER_SOCIAL}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = typeof data.detail === "string" ? data.detail : "Ошибка загрузки соцсетей";
+    throw new Error(msg);
+  }
+  return data as FooterSocialAdmin[];
+}
+
+/** POST /api/v1/footer/social */
+export async function createSocial(payload: {
+  name: string;
+  url: string;
+  icon_path: string;
+  sort_order: number;
+}): Promise<FooterSocialAdmin> {
+  const res = await ensureAuthAndFetch(
+    `${API_BASE.replace(/\/$/, "")}${FOOTER_SOCIAL}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = typeof data.detail === "string" ? data.detail : "Ошибка создания соцсети";
+    throw new Error(msg);
+  }
+  return data as FooterSocialAdmin;
+}
+
+/** PATCH /api/v1/footer/social/{id} */
+export async function updateSocial(
+  socialId: number,
+  payload: { name?: string; url?: string; icon_path?: string; sort_order?: number }
+): Promise<FooterSocialAdmin> {
+  const res = await ensureAuthAndFetch(
+    `${API_BASE.replace(/\/$/, "")}${FOOTER_SOCIAL}/${socialId}`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg = typeof data.detail === "string" ? data.detail : "Ошибка обновления соцсети";
+    throw new Error(msg);
+  }
+  return data as FooterSocialAdmin;
+}
+
+/** DELETE /api/v1/footer/social/{id} */
+export async function deleteSocial(socialId: number): Promise<void> {
+  const res = await ensureAuthAndFetch(
+    `${API_BASE.replace(/\/$/, "")}${FOOTER_SOCIAL}/${socialId}`,
     { method: "DELETE" }
   );
   if (res.status === 204) return;

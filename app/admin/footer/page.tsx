@@ -15,10 +15,15 @@ import {
   createContact,
   updateContact,
   deleteContact,
+  listSocial,
+  createSocial,
+  updateSocial,
+  deleteSocial,
   AUTH_REQUIRED,
   type FooterPartnerAdmin,
   type FooterVideoAdmin,
   type FooterContactAdmin,
+  type FooterSocialAdmin,
 } from "@/api/footer";
 import { uploadFile } from "@/api/files";
 
@@ -93,6 +98,18 @@ export default function AdminFooterPage() {
   const [contactEditContact, setContactEditContact] = useState("");
   const [contactEditSortOrder, setContactEditSortOrder] = useState(0);
 
+  const [socialList, setSocialList] = useState<FooterSocialAdmin[]>([]);
+  const [socialLoading, setSocialLoading] = useState(false);
+  const [socialName, setSocialName] = useState("");
+  const [socialUrl, setSocialUrl] = useState("");
+  const [socialIconFile, setSocialIconFile] = useState<File | null>(null);
+  const [socialSortOrder, setSocialSortOrder] = useState(0);
+  const [socialSubmitLoading, setSocialSubmitLoading] = useState(false);
+  const [socialUploading, setSocialUploading] = useState(false);
+  const [socialDeletingId, setSocialDeletingId] = useState<number | null>(null);
+  const [socialEditingSortOrderId, setSocialEditingSortOrderId] = useState<number | null>(null);
+  const [socialEditSortOrderValue, setSocialEditSortOrderValue] = useState(0);
+
   const loadPartners = useCallback(async () => {
     setPartnersLoading(true);
     try {
@@ -152,6 +169,24 @@ export default function AdminFooterPage() {
     }
   }, [router]);
 
+  const loadSocial = useCallback(async () => {
+    setSocialLoading(true);
+    try {
+      const list = await listSocial();
+      setSocialList(list);
+      setError(null);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Ошибка загрузки соцсетей";
+      if (msg === AUTH_REQUIRED) {
+        router.replace("/login");
+        return;
+      }
+      setError(msg);
+    } finally {
+      setSocialLoading(false);
+    }
+  }, [router]);
+
   useEffect(() => {
     const token = getStoredAccessToken();
     if (!token) {
@@ -160,14 +195,14 @@ export default function AdminFooterPage() {
     }
     me(token)
       .then(async () => {
-        await Promise.all([loadPartners(), loadVideo(), loadContacts()]);
+        await Promise.all([loadPartners(), loadVideo(), loadContacts(), loadSocial()]);
       })
       .catch(() => {
         setError("Сессия недействительна");
         router.replace("/login");
       })
       .finally(() => setLoading(false));
-  }, [router, loadPartners, loadVideo, loadContacts]);
+  }, [router, loadPartners, loadVideo, loadContacts, loadSocial]);
 
   const clearMessages = () => {
     setError(null);
@@ -389,6 +424,81 @@ export default function AdminFooterPage() {
     }
   };
 
+  const handleSubmitSocial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearMessages();
+    let icon_path = "";
+    if (socialIconFile) {
+      setSocialUploading(true);
+      try {
+        const res = await uploadFile(socialIconFile);
+        icon_path = res.path;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Ошибка загрузки иконки");
+        setSocialUploading(false);
+        return;
+      }
+      setSocialUploading(false);
+    }
+    if (!icon_path) {
+      setError("Выберите файл иконки");
+      return;
+    }
+    const name = socialName.trim();
+    const url = socialUrl.trim();
+    if (!name) {
+      setError("Введите название");
+      return;
+    }
+    if (!url) {
+      setError("Введите URL");
+      return;
+    }
+    setSocialSubmitLoading(true);
+    try {
+      await createSocial({ name, url, icon_path, sort_order: socialSortOrder });
+      setSuccessMessage("Соцсеть добавлена");
+      setSocialName("");
+      setSocialUrl("");
+      setSocialIconFile(null);
+      setSocialSortOrder(socialList.length > 0 ? Math.max(...socialList.map((s) => s.sort_order), 0) + 1 : 0);
+      const el = document.getElementById("social-icon-input");
+      if (el instanceof HTMLInputElement) el.value = "";
+      await loadSocial();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка добавления соцсети");
+    } finally {
+      setSocialSubmitLoading(false);
+    }
+  };
+
+  const handleDeleteSocial = async (id: number) => {
+    clearMessages();
+    setSocialDeletingId(id);
+    try {
+      await deleteSocial(id);
+      setSuccessMessage("Соцсеть удалена");
+      await loadSocial();
+      if (socialEditingSortOrderId === id) setSocialEditingSortOrderId(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка удаления");
+    } finally {
+      setSocialDeletingId(null);
+    }
+  };
+
+  const handleSaveSocialSortOrder = async (id: number) => {
+    clearMessages();
+    try {
+      await updateSocial(id, { sort_order: socialEditSortOrderValue });
+      setSuccessMessage("Порядок сохранён");
+      setSocialEditingSortOrderId(null);
+      await loadSocial();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Ошибка обновления");
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-8">
@@ -545,6 +655,140 @@ export default function AdminFooterPage() {
                   className="ml-auto px-3 py-1 rounded text-sm bg-red-900/50 text-red-200 hover:bg-red-900/70 disabled:opacity-50"
                 >
                   {deletingId === p.id ? "Удаление…" : "Удалить"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {/* Соцсети */}
+      <section className="rounded-xl bg-[#3f444b] p-6 text-gray-300 mb-6">
+        <h2 className="text-lg font-medium text-gray-100 mb-4">Соцсети</h2>
+
+        <form onSubmit={handleSubmitSocial} className="mb-6 flex flex-wrap items-end gap-4">
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Название</label>
+            <input
+              type="text"
+              value={socialName}
+              onChange={(e) => setSocialName(e.target.value)}
+              placeholder="Facebook"
+              className="w-36 px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">URL</label>
+            <input
+              type="url"
+              value={socialUrl}
+              onChange={(e) => setSocialUrl(e.target.value)}
+              placeholder="https://..."
+              className="w-64 px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Иконка</label>
+            <input
+              id="social-icon-input"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setSocialIconFile(e.target.files?.[0] ?? null)}
+              className="block w-full text-sm text-gray-400 file:mr-2 file:py-2 file:px-3 file:rounded file:border-0 file:bg-[#53565B] file:text-gray-200"
+            />
+            {socialIconFile && (
+              <p className="mt-1 text-xs text-gray-500">Выбран: {socialIconFile.name}</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Порядок</label>
+            <input
+              type="number"
+              min={0}
+              value={socialSortOrder}
+              onChange={(e) => setSocialSortOrder(Number(e.target.value) || 0)}
+              className="w-20 px-3 py-2 rounded-lg bg-[#2a2e33] border border-[#53565B] text-gray-100 focus:outline-none focus:ring-1 focus:ring-[#ff7d24]"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={socialSubmitLoading || socialUploading}
+            className="px-4 py-2 rounded-lg bg-[#ff7d24] text-white font-medium hover:bg-[#e66f1a] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {socialUploading ? "Загрузка…" : socialSubmitLoading ? "Добавление…" : "Добавить соцсеть"}
+          </button>
+        </form>
+
+        {socialLoading ? (
+          <p className="text-gray-500">Загрузка списка...</p>
+        ) : socialList.length === 0 ? (
+          <p className="text-gray-500">Соцсетей пока нет.</p>
+        ) : (
+          <ul className="space-y-3">
+            {socialList.map((s) => (
+              <li
+                key={s.id}
+                className="flex flex-wrap items-center gap-4 py-3 border-b border-[#53565B] last:border-0"
+              >
+                <div className="relative w-10 h-10 rounded overflow-hidden bg-[#2a2e33] shrink-0">
+                  <Image
+                    src={partnerLogoUrl(s.icon_path)}
+                    alt={s.name}
+                    fill
+                    className="object-contain"
+                    unoptimized={s.icon_path.startsWith("http")}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium text-gray-100">{s.name}</p>
+                  <p className="text-xs text-gray-500 truncate max-w-[240px]">{s.url}</p>
+                </div>
+                {socialEditingSortOrderId === s.id ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      value={socialEditSortOrderValue}
+                      onChange={(e) => setSocialEditSortOrderValue(Number(e.target.value) || 0)}
+                      className="w-16 px-2 py-1 rounded bg-[#2a2e33] border border-[#53565B] text-gray-100 text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleSaveSocialSortOrder(s.id)}
+                      className="text-sm text-[#ff7d24] hover:underline"
+                    >
+                      Сохранить
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSocialEditingSortOrderId(null)}
+                      className="text-sm text-gray-500 hover:underline"
+                    >
+                      Отмена
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">Порядок: {s.sort_order}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSocialEditingSortOrderId(s.id);
+                        setSocialEditSortOrderValue(s.sort_order);
+                      }}
+                      className="text-sm text-[#ff7d24] hover:underline"
+                    >
+                      Изменить
+                    </button>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={() => handleDeleteSocial(s.id)}
+                  disabled={socialDeletingId === s.id}
+                  className="ml-auto px-3 py-1 rounded text-sm bg-red-900/50 text-red-200 hover:bg-red-900/70 disabled:opacity-50"
+                >
+                  {socialDeletingId === s.id ? "Удаление…" : "Удалить"}
                 </button>
               </li>
             ))}

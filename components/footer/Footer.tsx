@@ -109,14 +109,14 @@ function normalizeFooterData(data: FooterResponse | null): {
   }));
 
   return {
-    partners: partners, //partners.length > 0 ? partners : FALLBACK_PARTNERS,
+    partners: partners.length > 0 ? partners : FALLBACK_PARTNERS,
     videoId,
     videoThumbnail,
     videoThumbnailAlt,
     videoLabel,
     videoUrl,
     videoMode,
-    social: social, //social.length > 0 ? social : FALLBACK_SOCIAL,
+    social: social.length > 0 ? social : FALLBACK_SOCIAL,
     contacts: data.contacts ?? [],
   };
 }
